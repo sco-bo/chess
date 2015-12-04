@@ -25,9 +25,10 @@ class Player
     @pieces.find {|i| i.class == type && i.position == nil}
   end
 
-  def valid_move?(current_square, new_square, type_of_piece)
-    type_of_piece.get_valid_moves.include?(new_square)
+  def valid_move?(current_square, desired_square, type_of_piece)
+    type_of_piece.get_valid_moves(current_square, desired_square) #boolean
   end
+
 
 end
 
@@ -55,6 +56,10 @@ class Board
 
   def find_square(location)
     @square_array.find {|i| i.coordinates == location}
+  end
+
+  def get_piece_type(square)
+    find_square(square).piece_type
   end
 
   def piece_present?(square, player_color)
@@ -117,26 +122,26 @@ class Game
       end
 
       case i.coordinates
-      when "a1" || "h1"
+      when "a1", "h1"
         i.piece_on_square = @player1.choose_player_piece(Rook)
         @player1.choose_player_piece(Rook).position = i.coordinates
-      when "b1" || "g1"
+      when "b1", "g1"
         i.piece_on_square = @player1.choose_player_piece(Knight)
         @player1.choose_player_piece(Knight).position = i.coordinates
-      when "c1" || "f1"
+      when "c1", "f1"
         i.piece_on_square = @player1.choose_player_piece(Bishop)
         @player1.choose_player_piece(Bishop).position = i.coordinates
       when "d1" 
         i.piece_on_square = @player1.choose_player_piece(Queen)
       when "e1"
         i.piece_on_square = @player1.choose_player_piece(King)
-      when "a8" || "h8"
+      when "a8", "h8"
         i.piece_on_square = @player2.choose_player_piece(Rook)
         @player2.choose_player_piece(Rook).position = i.coordinates
-      when "b8" || "g8"
+      when "b8", "g8"
         i.piece_on_square = @player2.choose_player_piece(Knight)
         @player2.choose_player_piece(Knight).position = i.coordinates
-      when "c8" || "f8"
+      when "c8", "f8"
         i.piece_on_square = @player2.choose_player_piece(Bishop)
         @player2.choose_player_piece(Bishop).position = i.coordinates
       when "d8"
@@ -157,27 +162,25 @@ class Game
     print_game_result
   end
 
-  def get_piece_type(square)
-    @board.find_square(square).piece_type
-  end
-
   def move(player) 
     puts "Which piece would you like to move '#{player.color} player'? (please choose a square ex: c2)"
     choice = gets.chomp.downcase
     if @board.piece_present?(choice, player.color)
-      type_of_piece = get_piece_type(choice)
+      piece_type = @board.get_piece_type(choice)
       puts "To where would you like to move that piece?"
       new_square = gets.chomp.downcase
-      if player.valid_move?(choice, new_square, type_of_piece)
-        @board.place_piece(new_square)
-        @current_turn += 1
+      current_square = @board.find_square(choice)
+      desired_square = @board.find_square(new_square)
+      if player.valid_move?(current_square, desired_square, piece_type)
+        puts "yep"
+        # @board.place_piece(desired_square)
+        # @current_turn += 1
       else
         puts "Invalid move, please choose again"
       end
     else
       puts "You do not have a piece there, please choose again"
     end
-      @board.place_piece(@player1.rook)
   end
 
   def current_player
@@ -212,8 +215,44 @@ class Rook < Piece
     @has_moved = false
   end
 
-  def self.get_valid_moves
-    puts "does this stuff"
+  def self.get_valid_moves(current_square, desired_square)
+    potentials = []
+    potentials.push(
+      [current_square.x + 1, current_square.y],
+      [current_square.x + 2, current_square.y],
+      [current_square.x + 3, current_square.y],
+      [current_square.x + 4, current_square.y],
+      [current_square.x + 5, current_square.y],
+      [current_square.x + 6, current_square.y],
+      [current_square.x + 7, current_square.y],
+      [current_square.x, current_square.y + 1],
+      [current_square.x, current_square.y + 2],
+      [current_square.x, current_square.y + 3],
+      [current_square.x, current_square.y + 4],
+      [current_square.x, current_square.y + 5],
+      [current_square.x, current_square.y + 6],
+      [current_square.x, current_square.y + 7],
+      [current_square.x - 1, current_square.y],
+      [current_square.x - 2, current_square.y],
+      [current_square.x - 3, current_square.y],
+      [current_square.x - 4, current_square.y],
+      [current_square.x - 5, current_square.y],
+      [current_square.x - 6, current_square.y],
+      [current_square.x - 7, current_square.y],
+      [current_square.x, current_square.y - 1],
+      [current_square.x, current_square.y - 2],
+      [current_square.x, current_square.y - 3],
+      [current_square.x, current_square.y - 4],
+      [current_square.x, current_square.y - 5],
+      [current_square.x, current_square.y - 6],
+      [current_square.x, current_square.y - 7]
+      )
+
+    valid_children = potentials.select do |i|
+      i[0].between?(0,8) &&
+      i[1].between?(0,8)
+    end
+    valid_children.include? [desired_square.x, desired_square.y]
   end
 end
 
@@ -222,8 +261,24 @@ class Knight < Piece
     super(color)
   end
 
-  def self.get_valid_moves
-    puts "does this stuff"
+  def self.get_valid_moves(current_square, desired_square)
+    potentials = []
+    potentials.push(
+      [current_square.x + 2, current_square.y + 1],
+      [current_square.x + 2, current_square.y - 1],
+      [current_square.x + 1, current_square.y + 2],
+      [current_square.x + 1, current_square.y - 2],
+      [current_square.x - 2, current_square.y + 1],
+      [current_square.x - 2, current_square.y - 1], 
+      [current_square.x - 1, current_square.y + 2], 
+      [current_square.x - 1, current_square.y - 2]
+      )
+
+    valid_children = potentials.select do |i|
+      i[0].between?(0,8) &&
+      i[1].between?(0,8)
+    end
+    valid_children.include? [desired_square.x, desired_square.y]
   end
 end
 
@@ -232,8 +287,44 @@ class Bishop < Piece
     super(color)
   end
 
-  def self.get_valid_moves
-    puts "does this stuff"
+  def self.get_valid_moves(current_square, desired_square)
+    potentials = []
+    potentials.push(
+      [current_square.x + 1, current_square.y + 1],
+      [current_square.x + 2, current_square.y + 2],
+      [current_square.x + 3, current_square.y + 3],
+      [current_square.x + 4, current_square.y + 4],
+      [current_square.x + 5, current_square.y + 5],
+      [current_square.x + 6, current_square.y + 6],
+      [current_square.x + 7, current_square.y + 7],
+      [current_square.x - 1, current_square.y + 1],
+      [current_square.x - 2, current_square.y + 2],
+      [current_square.x - 3, current_square.y + 3],
+      [current_square.x - 4, current_square.y + 4],
+      [current_square.x - 5, current_square.y + 5],
+      [current_square.x - 6, current_square.y + 6],
+      [current_square.x - 7, current_square.y + 7],
+      [current_square.x + 1, current_square.y - 1],
+      [current_square.x + 2, current_square.y - 2],
+      [current_square.x + 3, current_square.y - 3],
+      [current_square.x + 4, current_square.y - 4],
+      [current_square.x + 5, current_square.y - 5],
+      [current_square.x + 6, current_square.y - 6],
+      [current_square.x + 7, current_square.y - 7],
+      [current_square.x - 1, current_square.y - 1],
+      [current_square.x - 2, current_square.y - 2],
+      [current_square.x - 3, current_square.y - 3],
+      [current_square.x - 4, current_square.y - 4],
+      [current_square.x - 5, current_square.y - 5],
+      [current_square.x - 6, current_square.y - 6],
+      [current_square.x - 7, current_square.y - 7]
+      )
+
+    valid_children = potentials.select do |i|
+      i[0].between?(0,8) &&
+      i[1].between?(0,8)
+    end
+    valid_children.include? [desired_square.x, desired_square.y]
   end
 end
 
@@ -242,8 +333,72 @@ class Queen < Piece
     super(color)
   end
 
-  def self.get_valid_moves
-    puts "does this stuff"
+  def self.get_valid_moves(current_square, desired_square)
+    potentials = []
+    potentials.push(
+      [current_square.x + 1, current_square.y],
+      [current_square.x + 2, current_square.y],
+      [current_square.x + 3, current_square.y],
+      [current_square.x + 4, current_square.y],
+      [current_square.x + 5, current_square.y],
+      [current_square.x + 6, current_square.y],
+      [current_square.x + 7, current_square.y],
+      [current_square.x, current_square.y + 1],
+      [current_square.x, current_square.y + 2],
+      [current_square.x, current_square.y + 3],
+      [current_square.x, current_square.y + 4],
+      [current_square.x, current_square.y + 5],
+      [current_square.x, current_square.y + 6],
+      [current_square.x, current_square.y + 7],
+      [current_square.x - 1, current_square.y],
+      [current_square.x - 2, current_square.y],
+      [current_square.x - 3, current_square.y],
+      [current_square.x - 4, current_square.y],
+      [current_square.x - 5, current_square.y],
+      [current_square.x - 6, current_square.y],
+      [current_square.x - 7, current_square.y],
+      [current_square.x, current_square.y - 1],
+      [current_square.x, current_square.y - 2],
+      [current_square.x, current_square.y - 3],
+      [current_square.x, current_square.y - 4],
+      [current_square.x, current_square.y - 5],
+      [current_square.x, current_square.y - 6],
+      [current_square.x, current_square.y - 7],
+      [current_square.x + 1, current_square.y + 1],
+      [current_square.x + 2, current_square.y + 2],
+      [current_square.x + 3, current_square.y + 3],
+      [current_square.x + 4, current_square.y + 4],
+      [current_square.x + 5, current_square.y + 5],
+      [current_square.x + 6, current_square.y + 6],
+      [current_square.x + 7, current_square.y + 7],
+      [current_square.x - 1, current_square.y + 1],
+      [current_square.x - 2, current_square.y + 2],
+      [current_square.x - 3, current_square.y + 3],
+      [current_square.x - 4, current_square.y + 4],
+      [current_square.x - 5, current_square.y + 5],
+      [current_square.x - 6, current_square.y + 6],
+      [current_square.x - 7, current_square.y + 7],
+      [current_square.x + 1, current_square.y - 1],
+      [current_square.x + 2, current_square.y - 2],
+      [current_square.x + 3, current_square.y - 3],
+      [current_square.x + 4, current_square.y - 4],
+      [current_square.x + 5, current_square.y - 5],
+      [current_square.x + 6, current_square.y - 6],
+      [current_square.x + 7, current_square.y - 7],
+      [current_square.x - 1, current_square.y - 1],
+      [current_square.x - 2, current_square.y - 2],
+      [current_square.x - 3, current_square.y - 3],
+      [current_square.x - 4, current_square.y - 4],
+      [current_square.x - 5, current_square.y - 5],
+      [current_square.x - 6, current_square.y - 6],
+      [current_square.x - 7, current_square.y - 7]
+      )
+
+    valid_children = potentials.select do |i|
+      i[0].between?(0,8) &&
+      i[1].between?(0,8)
+    end
+    valid_children.include? [desired_square.x, desired_square.y]
   end
 end
 
