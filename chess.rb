@@ -1,32 +1,34 @@
 class Player
-  attr_accessor :color, :pawn1, :pawn2, :pawn3, :pawn4, :pawn5, :pawn6, :pawn7, :pawn8, :rook1, :rook2, :knight1, :knight2, :bishop1, :bishop2, :queen, :king
+  attr_accessor :color, :pieces
   def initialize(color)
     @color = color
-    @pawn1 = Pawn.new(color)
-    @pawn2 = Pawn.new(color)
-    @pawn3 = Pawn.new(color)
-    @pawn4 = Pawn.new(color)
-    @pawn5 = Pawn.new(color)
-    @pawn6 = Pawn.new(color)
-    @pawn7 = Pawn.new(color)
-    @pawn8 = Pawn.new(color)
-    @rook1 = Rook.new(color)
-    @rook2 = Rook.new(color)
-    @knight1 = Knight.new(color)
-    @knight2 = Knight.new(color)
-    @bishop1 = Bishop.new(color)
-    @bishop2 = Bishop.new(color)
-    @queen = Queen.new(color)
-    @king = King.new(color)
+    @pieces = [Pawn.new(color),
+               Pawn.new(color),
+               Pawn.new(color),
+               Pawn.new(color),
+               Pawn.new(color),
+               Pawn.new(color),
+               Pawn.new(color),
+               Pawn.new(color),
+               Rook.new(color),
+               Rook.new(color),
+               Knight.new(color),
+               Knight.new(color),
+               Bishop.new(color),
+               Bishop.new(color),
+               Queen.new(color),
+               King.new(color)
+              ]
   end
 
-  def valid_move?(current_square, new_square)
-
+  def choose_player_piece(type)
+    @pieces.find {|i| i.class == type && i.position == nil}
   end
 
-  def get_moves(piece)
-
+  def valid_move?(current_square, new_square, type_of_piece)
+    type_of_piece.get_valid_moves.include?(new_square)
   end
+
 end
 
 class Board
@@ -87,6 +89,10 @@ class Square
     @y = y
     @coordinates = coordinates
   end
+
+  def piece_type
+    self.piece_on_square.class
+  end
 end
 
 class Game
@@ -100,74 +106,43 @@ class Game
   end
 
   def set_opening_positions
-    @board.square_array.each_with_index do |i, index|
+    @board.square_array.each do |i|
+      case i.y
+      when 2
+        i.piece_on_square = @player1.choose_player_piece(Pawn)
+        @player1.choose_player_piece(Pawn).position = i.coordinates
+      when 7
+        i.piece_on_square = @player2.choose_player_piece(Pawn)
+        @player2.choose_player_piece(Pawn).position = i.coordinates
+      end
+
       case i.coordinates
-      when "a1"
-        i.piece_on_square = @player1.rook1
-      when "b1"
-        i.piece_on_square = @player1.knight1
-      when "c1"
-        i.piece_on_square = @player1.bishop1
-      when "d1"
-        i.piece_on_square = @player1.king
+      when "a1" || "h1"
+        i.piece_on_square = @player1.choose_player_piece(Rook)
+        @player1.choose_player_piece(Rook).position = i.coordinates
+      when "b1" || "g1"
+        i.piece_on_square = @player1.choose_player_piece(Knight)
+        @player1.choose_player_piece(Knight).position = i.coordinates
+      when "c1" || "f1"
+        i.piece_on_square = @player1.choose_player_piece(Bishop)
+        @player1.choose_player_piece(Bishop).position = i.coordinates
+      when "d1" 
+        i.piece_on_square = @player1.choose_player_piece(Queen)
       when "e1"
-        i.piece_on_square = @player1.queen
-      when "f1"
-        i.piece_on_square = @player1.bishop2
-      when "g1"
-        i.piece_on_square = @player1.knight2
-      when "h1"
-        i.piece_on_square = @player1.rook2
-      when "a2"
-        i.piece_on_square = @player1.pawn1
-      when "b2"
-        i.piece_on_square = @player1.pawn2
-      when "c2"
-        i.piece_on_square = @player1.pawn3
-      when "d2"
-        i.piece_on_square = @player1.pawn4
-      when "e2"
-        i.piece_on_square = @player1.pawn5
-      when "f2"
-        i.piece_on_square = @player1.pawn6
-      when "g2"
-        i.piece_on_square = @player1.pawn7
-      when "h2"
-        i.piece_on_square = @player1.pawn8
-      when "a8"
-        i.piece_on_square = @player2.rook1
-      when "b8"
-        i.piece_on_square = @player2.knight1
-      when "c8"
-        i.piece_on_square = @player2.bishop1
+        i.piece_on_square = @player1.choose_player_piece(King)
+      when "a8" || "h8"
+        i.piece_on_square = @player2.choose_player_piece(Rook)
+        @player2.choose_player_piece(Rook).position = i.coordinates
+      when "b8" || "g8"
+        i.piece_on_square = @player2.choose_player_piece(Knight)
+        @player2.choose_player_piece(Knight).position = i.coordinates
+      when "c8" || "f8"
+        i.piece_on_square = @player2.choose_player_piece(Bishop)
+        @player2.choose_player_piece(Bishop).position = i.coordinates
       when "d8"
-        i.piece_on_square = @player2.queen
+        i.piece_on_square = @player2.choose_player_piece(Queen)
       when "e8"
-        i.piece_on_square = @player2.king
-      when "f8"
-        i.piece_on_square = @player2.bishop2
-      when "g8"
-        i.piece_on_square = @player2.knight2
-      when "h8"
-        i.piece_on_square = @player2.rook2
-      when "a7"
-        i.piece_on_square = @player2.pawn1
-      when "b7"
-        i.piece_on_square = @player2.pawn2
-      when "c7"
-        i.piece_on_square = @player2.pawn3
-      when "d7"
-        i.piece_on_square = @player2.pawn4
-      when "e7"
-        i.piece_on_square = @player2.pawn5
-      when "f7"
-        i.piece_on_square = @player2.pawn6
-      when "g7"
-        i.piece_on_square = @player2.pawn7
-      when "h7"
-        i.piece_on_square = @player2.pawn8
-      else
-        i.piece_on_square = nil
+        i.piece_on_square = @player2.choose_player_piece(King)
       end
     end
   end
@@ -182,13 +157,18 @@ class Game
     print_game_result
   end
 
+  def get_piece_type(square)
+    @board.find_square(square).piece_type
+  end
+
   def move(player) 
     puts "Which piece would you like to move '#{player.color} player'? (please choose a square ex: c2)"
     choice = gets.chomp.downcase
     if @board.piece_present?(choice, player.color)
+      type_of_piece = get_piece_type(choice)
       puts "To where would you like to move that piece?"
       new_square = gets.chomp.downcase
-      if player.valid_move?(choice, new_square)
+      if player.valid_move?(choice, new_square, type_of_piece)
         @board.place_piece(new_square)
         @current_turn += 1
       else
@@ -219,6 +199,10 @@ class Pawn < Piece
     super(color)
     @turns_since_last_move = 0
   end
+
+  def self.get_valid_moves
+    puts "does this stuff"
+  end
 end
 
 class Rook < Piece
@@ -227,11 +211,19 @@ class Rook < Piece
     super(color)
     @has_moved = false
   end
+
+  def self.get_valid_moves
+    puts "does this stuff"
+  end
 end
 
 class Knight < Piece
   def initialize(color)
     super(color)
+  end
+
+  def self.get_valid_moves
+    puts "does this stuff"
   end
 end
 
@@ -239,11 +231,19 @@ class Bishop < Piece
   def initialize(color)
     super(color)
   end
+
+  def self.get_valid_moves
+    puts "does this stuff"
+  end
 end
 
 class Queen < Piece
   def initialize(color)
     super(color)
+  end
+
+  def self.get_valid_moves
+    puts "does this stuff"
   end
 end
 
@@ -252,6 +252,10 @@ class King < Piece
   def initialize(color)
     super(color)
     @has_moved = false
+  end
+
+  def self.get_valid_moves
+    puts "does this stuff"
   end
 end
 
