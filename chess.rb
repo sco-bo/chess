@@ -25,92 +25,86 @@ class Player
     @pieces.find {|i| i.class == type && i.position == nil}
   end
 
-  def valid_move?(current_square, desired_square, type_of_piece)
-    type_of_piece.get_valid_moves(current_square, desired_square) #children
-
-  end
-
-
-end
-
-class Board
-  attr_accessor :square_array
-  Letters = ("a".."h").to_a
-  Numbers = (1..8).to_a
-  def initialize
-    @history = History.new
-    @square_array = Array.new(64){Square.new}
-    assign_coordinate_names
-    assign_xy_values
-  end
-
-  def assign_coordinate_names
-    Letters.product(Numbers).zip(@square_array){|a, e| e.coordinates = a.join}
-  end
-
-  def assign_xy_values
-    @square_array.each_with_index do |i, index|
-      i.y = index % 8 + 1
-      i.x = (index/8) + 1
+  def valid_move?(current_square, desired_square, piece)
+    if piece.class == Pawn && (desired_square.x == current_square.x)
+      piece.get_valid_moves(current_square, desired_square)
+    elsif piece.class == Pawn && (desired_square.x != current_square.x) && (desired_square.piece_on_square.color != piece.color)
+      piece.get_valid_captures(current_square, desired_square)
+    elsif piece.class == Pawn && (desired_square.x != current_square.x) && (desired_square.piece_on_square.color == piece.color)
+      return false
+    else
+     piece.class.get_valid_moves(current_square, desired_square)
     end
   end
 
-  def find_square(location)
-    @square_array.find {|i| i.coordinates == location}
+  def valid_pawn_capture(current_square, desired_square)
+    Pawn.get_valid_captures(current_square, desired_square)
+  end
+end
+
+class Board
+  attr_accessor :square_hash
+  Letters = ("a".."h").to_a
+  Numbers = (1..8).to_a
+  def initialize
+    # @history = History.new
+    @square_hash = Hash.new
+    assign_coordinate_names
   end
 
-  def get_piece_type(square)
-    find_square(square).piece_type
-  end
-
-  def piece_present?(square, player_color)
-    return find_square(square).piece_on_square.color == player_color
-  end
-
-  def place_piece(piece)
-    
-  end
-
-  def to_s
-    output = ""
-    hash = 
-    @square_array.each do |i|
-      case i.y
-      when 8
-        output.prepend "#{i.piece_on_square.class || "**"}"
-      when 7
-        output.prepend "#{i.piece_on_square.class || "**"}"
-      when 6
-        output.prepend "#{i.piece_on_square.class || "**"}"
-      when 5
-        output.prepend "#{i.piece_on_square.class || "**"}"
-      when 4
-        output.prepend "#{i.piece_on_square.class || "**"}"
-      when 3
-        output.prepend "#{i.piece_on_square.class || "**"}"
-      when 2
-        output.prepend "#{i.piece_on_square.class || "**"}"
-      when 1
-        output.prepend "#{i.piece_on_square.class || "**"}"
+  def assign_coordinate_names
+    ('a'..'h').each_with_index do |letter,index|
+      (1..8).each do |n|
+        @square_hash["#{letter}#{n}"] = Square.new(index+1,n,"#{letter}#{n}")
       end
     end
   end
 
-  def store_snapshot
-
+  def piece_present?(square)
+    return @square_hash[square].piece_on_square
   end
+
+  def same_color_on_square?(square, player_color)
+    return @square_hash[square].piece_on_square.color == player_color
+  end
+
+  # def to_s
+  #   output = ""
+  #   hash = 
+  #   @square_array.each do |i|
+  #     case i.y
+  #     when 8
+  #       output.prepend "#{i.piece_on_square.class || "**"}"
+  #     when 7
+  #       output.prepend "#{i.piece_on_square.class || "**"}"
+  #     when 6
+  #       output.prepend "#{i.piece_on_square.class || "**"}"
+  #     when 5
+  #       output.prepend "#{i.piece_on_square.class || "**"}"
+  #     when 4
+  #       output.prepend "#{i.piece_on_square.class || "**"}"
+  #     when 3
+  #       output.prepend "#{i.piece_on_square.class || "**"}"
+  #     when 2
+  #       output.prepend "#{i.piece_on_square.class || "**"}"
+  #     when 1
+  #       output.prepend "#{i.piece_on_square.class || "**"}"
+  #     end
+  #   end
+  # end
+
 end
 
-class History
-  attr_accessor :snapshot
-  def initialize
-    @snapshot = Array.new
-  end
-end
+# class History
+#   attr_accessor :snapshot
+#   def initialize
+#     @snapshot = Array.new
+#   end
+# end
 
 class Square
   attr_accessor :piece_on_square, :x, :y, :coordinates
-  def initialize(piece_on_square=nil, x=nil, y=nil, coordinates=nil)
+  def initialize(piece_on_square=nil, x, y, coordinates)
     @piece_on_square = piece_on_square
     @x = x
     @y = y
@@ -133,49 +127,49 @@ class Game
   end
 
   def set_opening_positions
-    @board.square_array.each do |i|
-      case i.y
+    @board.square_hash.each do |key,value|
+      case value.y
       when 2
-        i.piece_on_square = @player1.choose_player_piece(Pawn)
-        @player1.choose_player_piece(Pawn).position = i.coordinates
+        value.piece_on_square = @player1.choose_player_piece(Pawn)
+        @player1.choose_player_piece(Pawn).position = value.coordinates
       when 7
-        i.piece_on_square = @player2.choose_player_piece(Pawn)
-        @player2.choose_player_piece(Pawn).position = i.coordinates
+        value.piece_on_square = @player2.choose_player_piece(Pawn)
+        @player2.choose_player_piece(Pawn).position = value.coordinates
       end
 
-      case i.coordinates
+      case value.coordinates
       when "a1", "h1"
-        i.piece_on_square = @player1.choose_player_piece(Rook)
-        @player1.choose_player_piece(Rook).position = i.coordinates
+        value.piece_on_square = @player1.choose_player_piece(Rook)
+        @player1.choose_player_piece(Rook).position = value.coordinates
       when "b1", "g1"
-        i.piece_on_square = @player1.choose_player_piece(Knight)
-        @player1.choose_player_piece(Knight).position = i.coordinates
+        value.piece_on_square = @player1.choose_player_piece(Knight)
+        @player1.choose_player_piece(Knight).position = value.coordinates
       when "c1", "f1"
-        i.piece_on_square = @player1.choose_player_piece(Bishop)
-        @player1.choose_player_piece(Bishop).position = i.coordinates
+        value.piece_on_square = @player1.choose_player_piece(Bishop)
+        @player1.choose_player_piece(Bishop).position = value.coordinates
       when "d1" 
-        i.piece_on_square = @player1.choose_player_piece(Queen)
+        value.piece_on_square = @player1.choose_player_piece(Queen)
       when "e1"
-        i.piece_on_square = @player1.choose_player_piece(King)
+        value.piece_on_square = @player1.choose_player_piece(King)
       when "a8", "h8"
-        i.piece_on_square = @player2.choose_player_piece(Rook)
-        @player2.choose_player_piece(Rook).position = i.coordinates
+        value.piece_on_square = @player2.choose_player_piece(Rook)
+        @player2.choose_player_piece(Rook).position = value.coordinates
       when "b8", "g8"
-        i.piece_on_square = @player2.choose_player_piece(Knight)
-        @player2.choose_player_piece(Knight).position = i.coordinates
+        value.piece_on_square = @player2.choose_player_piece(Knight)
+        @player2.choose_player_piece(Knight).position = value.coordinates
       when "c8", "f8"
-        i.piece_on_square = @player2.choose_player_piece(Bishop)
-        @player2.choose_player_piece(Bishop).position = i.coordinates
+        value.piece_on_square = @player2.choose_player_piece(Bishop)
+        @player2.choose_player_piece(Bishop).position = value.coordinates
       when "d8"
-        i.piece_on_square = @player2.choose_player_piece(Queen)
+        value.piece_on_square = @player2.choose_player_piece(Queen)
       when "e8"
-        i.piece_on_square = @player2.choose_player_piece(King)
+        value.piece_on_square = @player2.choose_player_piece(King)
       end
     end
   end
 
   def play_game
-    puts @board
+    puts @board.square_hash
     move(current_player) #only structured for irb
     while !@board.checkmate && !@board.stalemate?
       move(current_player)
@@ -187,16 +181,17 @@ class Game
   def move(player) 
     puts "Which piece would you like to move '#{player.color} player'? (please choose a square ex: c2)"
     choice = gets.chomp.downcase
-    if @board.piece_present?(choice, player.color)
-      piece_type = @board.get_piece_type(choice)
-      puts "To where would you like to move that piece?"
+    if @board.same_color_on_square?(choice, player.color)
+      piece = @board.square_hash[choice].piece_on_square
+      puts "To where would you like to move that #{piece.class}?"
       new_square = gets.chomp.downcase
-      current_square = @board.find_square(choice)
-      desired_square = @board.find_square(new_square)
-      if player.valid_move?(current_square, desired_square, piece_type)
+      current_square = @board.square_hash[choice]
+      desired_square = @board.square_hash[new_square]
+      if current_player.valid_move?(current_square, desired_square, piece)
+
+
+        
         puts "yep"
-        # @board.place_piece(desired_square)
-        # @current_turn += 1
       else
         puts "Invalid move, please choose again"
       end
@@ -219,14 +214,65 @@ class Piece
 end
 
 class Pawn < Piece
-  attr_accessor :turns_since_last_move
+  attr_accessor :turns_since_last_move, :on_initial_square, :color
   def initialize(color)
     super(color)
     @turns_since_last_move = 0
+    @on_initial_square = true
   end
 
-  def self.get_valid_moves
-    puts "does this stuff"
+  def get_valid_moves(current_square, desired_square)
+    potentials = []
+    if @color == "white" && @on_initial_square
+      potentials.push(
+        [current_square.x, current_square.y + 1],
+        [current_square.x, current_square.y + 2] 
+        )
+    elsif @on_initial_square && @color == "black"
+      potentials = []
+      potentials.push(
+        [current_square.x, current_square.y - 1],
+        [current_square.x, current_square.y - 2] 
+        )
+    elsif !@on_initial_square && @color == "white"
+      potentials = []
+      potentials.push(
+        [current_square.x, current_square.y + 1]
+        )
+    elsif !@on_initial_square && @color == "black"
+      potentials = []
+      potentials.push(
+        [current_square.x, current_square.y - 1]
+        )
+    end
+    p potentials
+
+    valid_children = potentials.select do |i|
+      i[0].between?(0,8) &&
+      i[1].between?(0,8)
+    end
+    valid_children.include? [desired_square.x, desired_square.y]   
+  end
+
+  def get_valid_captures(current_square, desired_square)
+    potentials = []
+    if @color == "white"
+      potentials.push(
+        [current_square.x + 1, current_square.y + 1],
+        [current_square.x - 1, current_square.y + 1]
+        )
+    elsif @color == "black"
+      potentials.push(
+        [current_square.x - 1, current_square.y - 1],
+        [current_square.x + 1, current_square.y - 1]
+        )
+    end
+
+    valid_children = potentials.select do |i|
+      i[0].between?(0,8) &&
+      i[1].between?(0,8)
+    end
+    valid_children.include? [desired_square.x, desired_square.y]
   end
 end
 
