@@ -26,7 +26,8 @@ class Player
   end
 
   def valid_move?(current_square, desired_square, type_of_piece)
-    type_of_piece.get_valid_moves(current_square, desired_square) #boolean
+    type_of_piece.get_valid_moves(current_square, desired_square) #children
+
   end
 
 
@@ -71,7 +72,28 @@ class Board
   end
 
   def to_s
-
+    output = ""
+    hash = 
+    @square_array.each do |i|
+      case i.y
+      when 8
+        output.prepend "#{i.piece_on_square.class || "**"}"
+      when 7
+        output.prepend "#{i.piece_on_square.class || "**"}"
+      when 6
+        output.prepend "#{i.piece_on_square.class || "**"}"
+      when 5
+        output.prepend "#{i.piece_on_square.class || "**"}"
+      when 4
+        output.prepend "#{i.piece_on_square.class || "**"}"
+      when 3
+        output.prepend "#{i.piece_on_square.class || "**"}"
+      when 2
+        output.prepend "#{i.piece_on_square.class || "**"}"
+      when 1
+        output.prepend "#{i.piece_on_square.class || "**"}"
+      end
+    end
   end
 
   def store_snapshot
