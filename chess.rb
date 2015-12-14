@@ -31,14 +31,10 @@ class Player
     elsif piece.class == Pawn && (desired_square.x != current_square.x) && (desired_square.piece_on_square.color != piece.color)
       piece.get_valid_captures(current_square, desired_square)
     elsif piece.class == Pawn && (desired_square.x != current_square.x) && (desired_square.piece_on_square.color == piece.color)
-      return false
+      false
     else
      piece.class.get_valid_moves(current_square, desired_square)
     end
-  end
-
-  def valid_pawn_capture(current_square, desired_square)
-    Pawn.get_valid_captures(current_square, desired_square)
   end
 end
 
@@ -47,60 +43,160 @@ class Board
   Letters = ("a".."h").to_a
   Numbers = (1..8).to_a
   def initialize
-    # @history = History.new
+    @history = History.new
     @square_hash = Hash.new
     assign_coordinate_names
   end
 
   def assign_coordinate_names
-    ('a'..'h').each_with_index do |letter,index|
-      (1..8).each do |n|
+    Letters.each_with_index do |letter,index|
+      Numbers.each do |n|
         @square_hash["#{letter}#{n}"] = Square.new(index+1,n,"#{letter}#{n}")
       end
     end
   end
 
-  def piece_present?(square)
-    return @square_hash[square].piece_on_square
+  def square_free?(square)
+    @square_hash[square].piece_on_square.nil?
   end
 
   def same_color_on_square?(square, player_color)
-    return @square_hash[square].piece_on_square.color == player_color
+    @square_hash[square].piece_on_square.color == player_color
   end
 
-  # def to_s
-  #   output = ""
-  #   hash = 
-  #   @square_array.each do |i|
-  #     case i.y
-  #     when 8
-  #       output.prepend "#{i.piece_on_square.class || "**"}"
-  #     when 7
-  #       output.prepend "#{i.piece_on_square.class || "**"}"
-  #     when 6
-  #       output.prepend "#{i.piece_on_square.class || "**"}"
-  #     when 5
-  #       output.prepend "#{i.piece_on_square.class || "**"}"
-  #     when 4
-  #       output.prepend "#{i.piece_on_square.class || "**"}"
-  #     when 3
-  #       output.prepend "#{i.piece_on_square.class || "**"}"
-  #     when 2
-  #       output.prepend "#{i.piece_on_square.class || "**"}"
-  #     when 1
-  #       output.prepend "#{i.piece_on_square.class || "**"}"
-  #     end
-  #   end
-  # end
-
+  def path_clear?(current_square, desired_square, player_color)
+    letters_hash = {1=>"a", 2=>"b", 3=>"c", 4=>"d", 5=>"e", 6=>"f", 7=>"g", 8=>"h"}
+    path_clear = false
+    if current_square.piece_type == Knight && (square_free?(desired_square.coordinates) || !same_color_on_square?(desired_square.coordinates, player_color))
+      path_clear = true
+    elsif current_square.piece_type == Knight && same_color_on_square?(desired_square.coordinates)
+      puts "Piece(s) in way"
+      path_clear = false
+    elsif (current_square.x < desired_square.x) && (current_square.y < desired_square.y)
+       (desired_square.x - current_square.x).times do |i| 
+        i += 1
+        if square_free?("#{letters_hash[current_square.x + i]}#{current_square.y + i}")
+          path_clear = true
+        elsif (current_square.x + i  == desired_square.x) && (current_square.y + i  == desired_square.y) && !same_color_on_square?(desired_square.coordinates, player_color)
+          path_clear = true #can replace this with a "capture piece" action
+        else 
+          puts "Piece(s) in way"
+          path_clear = false
+          break
+        end
+        path_clear
+      end
+    elsif (current_square.x < desired_square.x) && (current_square.y > desired_square.y)
+      (current_square.x - desired_square.x).times do |i| 
+        i += 1
+        if square_free?("#{letters_hash[current_square.x + i]}#{current_square.y + i}")
+          path_clear = true
+        elsif (current_square.x + i  == desired_square.x) && (current_square.y + i  == desired_square.y) && !same_color_on_square?(desired_square.coordinates, player_color)
+          path_clear = true
+        else 
+          puts "Piece(s) in way"
+          path_clear = false
+          break
+        end
+        path_clear
+      end
+    elsif (current_square.x > desired_square.x) && (current_square.y > desired_square.y)
+      (current_square.x - desired_square.x).times do |i|
+        i += 1
+        if square_free?("#{letters_hash[current_square.x - i]}#{current_square.y - i}")
+          path_clear = true
+        elsif (current_square.x - i == desired_square.x) && (current_square.y - i == desired_square.y) && !same_color_on_square?(desired_square.coordinates, player_color)
+          path_clear = true
+        else
+          puts "Piece(s) in way"
+          path_clear = false
+          break
+        end
+        path_clear
+      end
+    elsif (current_square.x > desired_square.x) && (current_square.y < desired_square.y)
+      (current_square.x - desired_square.x).times do |i|
+        i += 1
+        if square_free?("#{letters_hash[current_square.x - i]}#{current_square.y + i}")
+          path_clear = true
+        elsif (current_square.x - i == desired_square.x) && (current_square.y + i == desired_square.y) && !same_color_on_square?(desired_square.coordinates, player_color)
+          path_clear = true
+        else  
+          puts "Piece(s) in way"
+          path_clear = false
+          break
+        end
+        path_clear
+      end
+    elsif current_square.x > desired_square.x
+      (current_square.x - desired_square.x).times do |i| 
+        i += 1
+        if square_free?("#{letters_hash[current_square.x - i]}#{current_square.y}")
+          path_clear = true
+        elsif current_square.x - i == desired_square.x && !same_color_on_square?(desired_square.coordinates, player_color)
+          path_clear = true
+        else 
+          puts "Piece(s) in way"
+          path_clear = false
+          break
+        end
+        path_clear
+      end
+    elsif current_square.x < desired_square.x
+      (desired_square.x - current_square.x).times do |i|
+        i += 1
+        if square_free?("#{letters_hash[current_square.x + i]}#{current_square.y}")
+          path_clear = true
+        elsif current_square.x + i == desired_square.x && !same_color_on_square?(desired_square.coordinates, player_color)
+          path_clear = true
+        else 
+          puts "Piece(s) in way"
+          path_clear = false
+          break
+        end
+        path_clear
+      end
+    elsif current_square.y > desired_square.y 
+      (current_square.y - desired_square.y).times do |i|
+        i += 1
+        if square_free?("#{letters_hash[current_square.x]}#{current_square.y - i}")
+          path_clear = true
+        elsif current_square.y - i == desired_square.y && !same_color_on_square?(desired_square.coordinates, player_color)
+          path_clear = true
+        else 
+          puts "Piece(s) in way"
+          path_clear = false
+          break
+        end
+        path_clear
+      end
+    elsif current_square.y < desired_square.y
+       (desired_square.y - current_square.y).times do |i|
+        i += 1
+        if square_free?("#{letters_hash[current_square.x]}#{current_square.y + i}")
+          path_clear = true
+        elsif current_square.y + i == desired_square.y && !same_color_on_square?(desired_square.coordinates, player_color)
+          path_clear = true
+        else 
+          puts "Piece(s) in way"
+          path_clear = false
+          break
+        end
+        path_clear
+      end
+    else 
+      puts "Error"
+      return false
+    end
+  end
 end
 
-# class History
-#   attr_accessor :snapshot
-#   def initialize
-#     @snapshot = Array.new
-#   end
-# end
+class History
+  attr_accessor :snapshot
+  def initialize
+    @snapshot = Array.new
+  end
+end
 
 class Square
   attr_accessor :piece_on_square, :x, :y, :coordinates
@@ -171,10 +267,10 @@ class Game
   def play_game
     puts @board.square_hash
     move(current_player) #only structured for irb
-    while !@board.checkmate && !@board.stalemate?
-      move(current_player)
-      puts @board
-    end
+    # while !@board.checkmate && !@board.stalemate?
+    #   move(current_player)
+    #   puts @board
+    # end
     print_game_result
   end
 
@@ -187,10 +283,7 @@ class Game
       new_square = gets.chomp.downcase
       current_square = @board.square_hash[choice]
       desired_square = @board.square_hash[new_square]
-      if current_player.valid_move?(current_square, desired_square, piece)
-
-
-        
+      if current_player.valid_move?(current_square, desired_square, piece) && @board.path_clear?(current_square, desired_square, piece.color)
         puts "yep"
       else
         puts "Invalid move, please choose again"
@@ -245,7 +338,6 @@ class Pawn < Piece
         [current_square.x, current_square.y - 1]
         )
     end
-    p potentials
 
     valid_children = potentials.select do |i|
       i[0].between?(0,8) &&
@@ -477,8 +569,24 @@ class King < Piece
     @has_moved = false
   end
 
-  def self.get_valid_moves
-    puts "does this stuff"
+  def self.get_valid_moves(current_square, desired_square)
+    potentials = []
+    potentials.push(
+      [current_square.x, current_square.y + 1],
+      [current_square.x, current_square.y - 1],
+      [current_square.x + 1, current_square.y],
+      [current_square.x - 1, current_square.y],
+      [current_square.x + 1, current_square.y + 1],
+      [current_square.x - 1, current_square.y - 1],
+      [current_square.x + 1, current_square.y - 1],
+      [current_square.x - 1, current_square.y + 1]
+      )
+
+    valid_children = potentials.select do |i|
+      i[0].between?(0,8) &&
+      i[1].between?(0,8)
+    end
+    valid_children.include? [desired_square.x, desired_square.y]
   end
 end
 
