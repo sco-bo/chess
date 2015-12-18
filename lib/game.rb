@@ -54,12 +54,17 @@ class Game
     end
   end
 
-  def capture_piece(desired_square)
-    current_player.captured_pieces << desired_square.piece_on_square
+  def capture_piece(to_square)
+    current_player.captured_pieces << to_square.piece_on_square
   end
 
-  def remove_from_player_pieces(desired_square)
-    opponent.pieces.delete_if {|i| i.position == desired_square.coordinates}
+  def capture_en_passant(opponent_pawn_square)
+    capture_piece(opponent_pawn_square)
+    opponent_pawn_square.piece_on_square = nil    
+  end
+
+  def remove_from_player_pieces(to_square)
+    opponent.pieces.delete_if {|i| i.position == to_square.coordinates}
   end
 
   def play_game
@@ -97,27 +102,29 @@ class Game
       piece = @board.square_hash[choice].piece_on_square
       puts "To where would you like to move that #{piece.class}?"
       new_square = gets.chomp.downcase
-      current_square = @board.square_hash[choice]
-      desired_square = @board.square_hash[new_square]
-      if !@board.square_free?(new_square) && current_player.valid_move?(current_square, desired_square, piece) && @board.path_clear?(current_square, desired_square, piece.color)
-        capture_piece(desired_square)
-        @board.store_move(current_square, desired_square)
-        remove_from_player_pieces(desired_square)
+      from_square = @board.square_hash[choice]
+      to_square = @board.square_hash[new_square]
+      if !@board.square_free?(new_square) && current_player.valid_move?(from_square, to_square, piece) && @board.path_clear?(from_square, to_square, piece.color)
+        capture_piece(to_square)
+        @board.store_move(from_square, to_square)
+        remove_from_player_pieces(to_square)
         adjust_instance_methods(piece)
-        @board.place_piece(current_square, desired_square)
-        player.set_position(piece, desired_square)
+        @board.place_piece(from_square, to_square)
+        player.set_position(piece, to_square)
         @current_turn += 1   
-      elsif @board.square_free?(new_square) && current_player.valid_move?(current_square, desired_square, piece) && @board.path_clear?(current_square, desired_square, piece.color)
-        @board.store_move(current_square, desired_square)
+      elsif @board.square_free?(new_square) && current_player.valid_move?(from_square, to_square, piece) && @board.path_clear?(from_square, to_square, piece.color)
+        @board.store_move(from_square, to_square)
         adjust_instance_methods(piece)
-        @board.place_piece(current_square, desired_square)
-        player.set_position(piece, desired_square)
+        @board.place_piece(from_square, to_square)
+        player.set_position(piece, to_square)
         @current_turn += 1
-      elsif @current_turn > 1 && @board.square_free?(new_square) && @board.valid_en_passant?(current_square, desired_square, piece) && current_player.en_passant_move?(current_square, desired_square, piece)
-        @board.store_move(current_square, desired_square)
-        adjust_instance_methods(piece)
-        @board.place_piece(current_square, desired_square)
-        player.set_position(piece, desired_square)
+      elsif @current_turn > 1 && current_player.en_passant_move?(from_square, to_square, piece) && @board.square_free?(new_square) && @board.valid_en_passant?(from_square, to_square, piece)
+        capture_en_passant(@board.history.last_move["Pawn"][1])
+        remove_from_player_pieces(@board.history.last_move["Pawn"][1])
+        @board.store_move(from_square, to_square)
+        @board.place_piece(from_square, to_square)
+        player.set_position(piece, to_square)
+        #need to add piece capture mechanism here
         @current_turn += 1
       else
         puts "Invalid move, please choose again"

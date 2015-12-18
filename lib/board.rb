@@ -54,97 +54,104 @@ class Board
     end
   end
 
-  def diagonal_up_right?(current_square, desired_square)
-    if (current_square.x < desired_square.x) && (current_square.y < desired_square.y)
+  def diagonal_up_right?(from_square, to_square)
+    if (from_square.x < to_square.x) && (from_square.y < to_square.y)
       true
     else
       false
     end
   end
 
-  def diagonal_down_right?(current_square, desired_square)
-    if (current_square.x < desired_square.x) && (current_square.y > desired_square.y)
+  def diagonal_down_right?(from_square, to_square)
+    if (from_square.x < to_square.x) && (from_square.y > to_square.y)
       true
     else
       false
     end
   end
 
-  def diagonal_up_left?(current_square, desired_square)
-    if (current_square.x > desired_square.x) && (current_square.y < desired_square.y)
+  def diagonal_up_left?(from_square, to_square)
+    if (from_square.x > to_square.x) && (from_square.y < to_square.y)
       true
     else
       false
     end
   end
 
-  def diagonal_down_left?(current_square, desired_square)
-    if (current_square.x > desired_square.x) && (current_square.y > desired_square.y)
+  def diagonal_down_left?(from_square, to_square)
+    if (from_square.x > to_square.x) && (from_square.y > to_square.y)
       true
     else
       false
     end
   end
 
-  def horizontal_right?(current_square, desired_square)
-    if current_square.x < desired_square.x
+  def horizontal_right?(from_square, to_square)
+    if from_square.x < to_square.x
       true
     else
       false
     end
   end
 
-  def horizontal_left?(current_square, desired_square)
-    if current_square.x > desired_square.x
+  def horizontal_left?(from_square, to_square)
+    if from_square.x > to_square.x
       true
     else
       false
     end
   end
 
-  def up?(current_square, desired_square)
-    if current_square.y < desired_square.y
+  def up?(from_square, to_square)
+    if from_square.y < to_square.y
       true
     else
       false
     end
   end
 
-  def down?(current_square, desired_square)
-    if current_square.y > desired_square.y
+  def down?(from_square, to_square)
+    if from_square.y > to_square.y
       true
     else
       false
     end
+  end
+
+  def move_allowed?(from_square, to_square, piece)
+    #path_clear?(from_square, to_square, piece.color)
+    #!in_check?
+    #valid_en_passant?(from_square, to_square, piece)
+
   end
 
   def pawn_advance_two_squares?
-    pawn_out_two = false
-    pawn_hash = @history.last_move["Pawn"]
-    if @history.last_move.key? "Pawn" && pawn_hash[0].y == 7 && pawn_hash[1].y == 5
-      pawn_out_two = true
-    elsif @history.last_move.key? "Pawn" && pawn_hash[0].y == 2 && pawn_hash[1].y == 4
-      pawn_out_two = true
+    if (@history.last_move.key? "Pawn") && @history.last_move["Pawn"][0].y == 7 && @history.last_move["Pawn"][1].y == 5
+      true
+    elsif (@history.last_move.key? "Pawn") && @history.last_move["Pawn"][0].y == 2 && @history.last_move["Pawn"][1].y == 4
+      true
     else
-      pawn_out_two = false
+      false
     end
-    pawn_out_two
   end
 
-  def move_allowed?(current_square, desired_square, piece)
-    #path_clear?(current_square, desired_square, piece.color)
-    #!in_check?
-    #valid_en_passant?(current_square, desired_square, piece)
-
-  end
-
-  def valid_en_passant?(current_square, desired_square, piece)
+  def valid_en_passant?(from_square, to_square, piece)
     if piece.class != Pawn
       false
-    elsif pawn_advance_two_squares? && adjacent_to_piece?(desired_square, piece)
+    elsif pawn_advance_two_squares? && adjacent_to_piece?(to_square, piece)
       true
     else
       false       
+    end
+  end
+
+  def adjacent_to_piece?(to_square, piece)
+    if piece.color == "white" && (@history.last_move["Pawn"][1].y == to_square.y - 1)
+      true
+    elsif piece.color == "black" && (@history.last_move["Pawn"][1].y == to_square.y + 1)
+      true
+    else
+      false
     end
   end
 
@@ -196,135 +203,117 @@ class Board
     end
   end
 
-  def adjacent_to_piece?(desired_square, piece)
-    if piece.color == "white" && (@history.last_move["Pawn"][1].y == desired_square.y - 1)
-      true
-    elsif piece.color == "black" && (@history.last_move["Pawn"][1].y == desired_square.y + 1)
-      true
-    else
-      false
-    end
-  end
-
-  def path_clear?(current_square, desired_square, player_color)
+  def path_clear?(from_square, to_square, player_color)
     letters_hash = {1=>"a", 2=>"b", 3=>"c", 4=>"d", 5=>"e", 6=>"f", 7=>"g", 8=>"h"}
-    path_clear = false
-    if current_square.piece_type == Knight && (square_free?(desired_square.coordinates) || !same_color_on_square?(desired_square.coordinates, player_color))
-      path_clear = true
-    elsif current_square.piece_type == Knight && same_color_on_square?(desired_square.coordinates)
+    false
+    if from_square.piece_type == Knight && (square_free?(to_square.coordinates) || !same_color_on_square?(to_square.coordinates, player_color))
+      true
+    elsif from_square.piece_type == Knight && same_color_on_square?(to_square.coordinates)
       puts "Piece(s) in way"
-      path_clear = false
-    elsif diagonal_up_right?(current_square, desired_square)
-       (desired_square.x - current_square.x).times do |i| 
+      false
+    elsif diagonal_up_right?(from_square, to_square)
+       (to_square.x - from_square.x).times do |i| 
         i += 1
-        if square_free?("#{letters_hash[current_square.x + i]}#{current_square.y + i}")
-          path_clear = true
-        elsif (current_square.x + i  == desired_square.x) && (current_square.y + i  == desired_square.y) && !same_color_on_square?(desired_square.coordinates, player_color)
-          path_clear = true 
+        if square_free?("#{letters_hash[from_square.x + i]}#{from_square.y + i}")
+          true
+        elsif (from_square.x + i  == to_square.x) && (from_square.y + i  == to_square.y) && !same_color_on_square?(to_square.coordinates, player_color)
+          true 
         else 
           puts "Piece(s) in way"
-          path_clear = false
+          false
           break
         end
-        path_clear
       end
-    elsif diagonal_down_right?(current_square, desired_square)
-      (desired_square.x - current_square.x).times do |i| 
+    elsif diagonal_down_right?(from_square, to_square)
+      (to_square.x - from_square.x).times do |i| 
         i += 1
-        if square_free?("#{letters_hash[current_square.x + i]}#{current_square.y + i}")
-          path_clear = true
-        elsif (current_square.x + i  == desired_square.x) && (current_square.y + i  == desired_square.y) && !same_color_on_square?(desired_square.coordinates, player_color)
-          path_clear = true
+        if square_free?("#{letters_hash[from_square.x + i]}#{from_square.y + i}")
+          true
+        elsif (from_square.x + i  == to_square.x) && (from_square.y + i  == to_square.y) && !same_color_on_square?(to_square.coordinates, player_color)
+          true
         else 
           puts "Piece(s) in way"
-          path_clear = false
+          false
           break
         end
-        path_clear
       end
-    elsif diagonal_down_left?(current_square, desired_square)
-      (current_square.x - desired_square.x).times do |i|
+    elsif diagonal_down_left?(from_square, to_square)
+      (from_square.x - to_square.x).times do |i|
         i += 1
-        if square_free?("#{letters_hash[current_square.x - i]}#{current_square.y - i}")
-          path_clear = true
-        elsif (current_square.x - i == desired_square.x) && (current_square.y - i == desired_square.y) && !same_color_on_square?(desired_square.coordinates, player_color)
-          path_clear = true
+        if square_free?("#{letters_hash[from_square.x - i]}#{from_square.y - i}")
+          true
+        elsif (from_square.x - i == to_square.x) && (from_square.y - i == to_square.y) && !same_color_on_square?(to_square.coordinates, player_color)
+          true
         else
           puts "Piece(s) in way"
-          path_clear = false
+          false
           break
         end
-        path_clear
       end
-    elsif diagonal_up_left?(current_square, desired_square)
-      (current_square.x - desired_square.x).times do |i|
+    elsif diagonal_up_left?(from_square, to_square)
+      (from_square.x - to_square.x).times do |i|
         i += 1
-        if square_free?("#{letters_hash[current_square.x - i]}#{current_square.y + i}")
-          path_clear = true
-        elsif (current_square.x - i == desired_square.x) && (current_square.y + i == desired_square.y) && !same_color_on_square?(desired_square.coordinates, player_color)
-          path_clear = true
+        if square_free?("#{letters_hash[from_square.x - i]}#{from_square.y + i}")
+          true
+        elsif (from_square.x - i == to_square.x) && (from_square.y + i == to_square.y) && !same_color_on_square?(to_square.coordinates, player_color)
+          true
         else  
           puts "Piece(s) in way"
-          path_clear = false
+          false
           break
         end
-        path_clear
       end
-    elsif horizontal_left?(current_square, desired_square)
-      (current_square.x - desired_square.x).times do |i| 
+    elsif horizontal_left?(from_square, to_square)
+      (from_square.x - to_square.x).times do |i| 
         i += 1
-        if square_free?("#{letters_hash[current_square.x - i]}#{current_square.y}")
-          path_clear = true
-        elsif current_square.x - i == desired_square.x && !same_color_on_square?(desired_square.coordinates, player_color)
-          path_clear = true
+        if square_free?("#{letters_hash[from_square.x - i]}#{from_square.y}")
+          true
+        elsif from_square.x - i == to_square.x && !same_color_on_square?(to_square.coordinates, player_color)
+          true
         else 
           puts "Piece(s) in way"
-          path_clear = false
+          false
           break
         end
-        path_clear
       end
-    elsif horizontal_right?(current_square, desired_square)
-      (desired_square.x - current_square.x).times do |i|
+    elsif horizontal_right?(from_square, to_square)
+      (to_square.x - from_square.x).times do |i|
         i += 1
-        if square_free?("#{letters_hash[current_square.x + i]}#{current_square.y}")
-          path_clear = true
-        elsif current_square.x + i == desired_square.x && !same_color_on_square?(desired_square.coordinates, player_color)
-          path_clear = true
+        if square_free?("#{letters_hash[from_square.x + i]}#{from_square.y}")
+          true
+        elsif from_square.x + i == to_square.x && !same_color_on_square?(to_square.coordinates, player_color)
+          true
         else 
           puts "Piece(s) in way"
-          path_clear = false
+          false
           break
         end
-        path_clear
       end
-    elsif down?(current_square, desired_square) 
-      (current_square.y - desired_square.y).times do |i|
+    elsif down?(from_square, to_square) 
+      (from_square.y - to_square.y).times do |i|
         i += 1
-        if square_free?("#{letters_hash[current_square.x]}#{current_square.y - i}")
-          path_clear = true
-        elsif current_square.y - i == desired_square.y && !same_color_on_square?(desired_square.coordinates, player_color)
-          path_clear = true
+        if square_free?("#{letters_hash[from_square.x]}#{from_square.y - i}")
+          true
+        elsif from_square.y - i == to_square.y && !same_color_on_square?(to_square.coordinates, player_color)
+          true
         else 
           puts "Piece(s) in way"
-          path_clear = false
+          false
           break
         end
-        path_clear
       end
-    elsif up?(current_square, desired_square)
-       (desired_square.y - current_square.y).times do |i|
+    elsif up?(from_square, to_square)
+       (to_square.y - from_square.y).times do |i|
         i += 1
-        if square_free?("#{letters_hash[current_square.x]}#{current_square.y + i}")
-          path_clear = true
-        elsif current_square.y + i == desired_square.y && !same_color_on_square?(desired_square.coordinates, player_color)
-          path_clear = true
+        if square_free?("#{letters_hash[from_square.x]}#{from_square.y + i}")
+          true
+        elsif from_square.y + i == to_square.y && !same_color_on_square?(to_square.coordinates, player_color)
+          true
         else 
           puts "Piece(s) in way"
-          path_clear = false
+          false
           break
         end
-        path_clear
       end
     else 
       puts "Error"

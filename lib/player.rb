@@ -26,30 +26,34 @@ class Player
     @pieces.find {|i| i.class == type && i.position == nil}
   end
 
-  def valid_move?(current_square, desired_square, piece)
-    if piece.class == Pawn && (desired_square.x == current_square.x)
-      piece.get_valid_moves(current_square, desired_square)
-    elsif piece.class == Pawn && (desired_square.x != current_square.x) && (desired_square.piece_on_square.color != piece.color)
-      piece.get_valid_captures(current_square, desired_square)
-    elsif piece.class == Pawn && (desired_square.x != current_square.x) && (desired_square.piece_on_square.nil? || desired_square.piece_on_square.color == piece.color)
+  def valid_move?(from_square, to_square, piece)
+    if piece.class == Pawn && (to_square.x == from_square.x)
+      piece.get_valid_moves(from_square, to_square)
+    elsif piece.class == Pawn && (to_square.x != from_square.x) && !to_square.piece_on_square.nil? && (to_square.piece_on_square.color != piece.color)
+      piece.get_valid_captures(from_square, to_square)
+    elsif piece.class == Pawn && (to_square.x != from_square.x) && (to_square.piece_on_square.nil? || to_square.piece_on_square.color == piece.color)
       false
     else
-     piece.class.get_valid_moves(current_square, desired_square)
+     piece.class.get_valid_moves(from_square, to_square)
     end
   end
 
-  def in_check?(current_square, desired_square)
-    if current_square.nil?
+  def in_check?(from_square, to_square)
+    if from_square.nil?
 
     end
   end
 
-  def en_passant_move?(current_square, desired_square, piece)
-    piece.get_en_passant_moves(current_square, desired_square)
+  def en_passant_move?(from_square, to_square, piece)
+    if piece.class == Pawn 
+      piece.get_en_passant_moves(from_square, to_square)
+    else
+      false
+    end
   end
 
-  def set_position(piece, desired_square)
-    piece.position = desired_square.coordinates
+  def set_position(piece, to_square)
+    piece.position = to_square.coordinates
   end
 
   def short_side_rook
