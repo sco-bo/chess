@@ -98,8 +98,22 @@ class Game
     end
   end
 
-  def put_in_check?
-    if square_under_attack?(current_player.king.position) &&  @board.path_clear?(@mock_hash[threatening_piece(current_player.king.position).position], @mock_hash[current_player.king.position], opponent.color, @mock_hash) 
+  def put_in_check?(square)
+    if square_under_attack?(square) &&  @board.path_clear?(@mock_hash[threatening_piece(square).position], @mock_hash[square], opponent.color, @mock_hash) 
+      true
+    else
+      false
+    end
+  end
+
+  def castle_through_attack?(player_color, castle_side)
+    if player_color == "white" && castle_side == "short" && !put_in_check?("f1") && !put_in_check?("g1")
+      true
+    elsif player_color == "white" && castle_side == "long" && !put_in_check?("d1") && !put_in_check?("c1")
+      true  
+    elsif player_color == "black" && castle_side == "short" && !put_in_check?("f8") && !put_in_check?("g8")
+      true
+    elsif player_color == "black" && castle_side == "long" && !put_in_check?("d8") && !put_in_check?("c8")
       true
     else
       false
@@ -118,10 +132,10 @@ class Game
       puts "Would you like to castle short (on the kingside) or long (on the queenside)
             \nplease type 'short' or 'long'"  
       castle_side = gets.chomp.downcase
-      if castle_side == "short" && @board.valid_short_castle?(player.color) && player.pieces_on_initial_square?
+      if castle_side == "short" && @board.valid_short_castle?(player.color) && player.pieces_on_initial_square? && !castle_through_attack?(current_player.color, castle_side)
         @board.castle_short_side(player) 
         @current_turn += 1 
-      elsif castle_side == "long" && @board.valid_long_castle?(player.color) && player.pieces_on_initial_square?
+      elsif castle_side == "long" && @board.valid_long_castle?(player.color) && player.pieces_on_initial_square? && !castle_through_attack?(current_player.color, castle_side)
         @board.castle_long_side(player)
         @current_turn += 1
       else
@@ -134,7 +148,7 @@ class Game
       mock_move(@mock_hash[choice], @mock_hash[new_square])
       from_square = @board.square_hash[choice]
       to_square = @board.square_hash[new_square]
-      if !@board.square_free?(new_square) && player.valid_move?(from_square, to_square, piece) && @board.path_clear?(from_square, to_square, piece.color) && !put_in_check?
+      if !@board.square_free?(new_square) && player.valid_move?(from_square, to_square, piece) && @board.path_clear?(from_square, to_square, piece.color) && !put_in_check?(current_player.king.position)
         capture_piece(to_square)
         @board.store_move(from_square, to_square)
         remove_from_player_pieces(to_square)
@@ -142,13 +156,13 @@ class Game
         @board.place_piece(from_square, to_square)
         player.set_position(piece, to_square)
         @current_turn += 1   
-      elsif @board.square_free?(new_square) && player.valid_move?(from_square, to_square, piece) && @board.path_clear?(from_square, to_square, piece.color) && !put_in_check?
+      elsif @board.square_free?(new_square) && player.valid_move?(from_square, to_square, piece) && @board.path_clear?(from_square, to_square, piece.color) && !put_in_check?(current_player.king.position)
         @board.store_move(from_square, to_square)
         adjust_instance_methods(piece)
         @board.place_piece(from_square, to_square)
         player.set_position(piece, to_square)
         @current_turn += 1
-      elsif @current_turn > 1 && player.en_passant_move?(from_square, to_square, piece) && @board.square_free?(new_square) && @board.valid_en_passant?(from_square, to_square, piece) && !put_in_check?
+      elsif @current_turn > 1 && player.en_passant_move?(from_square, to_square, piece) && @board.square_free?(new_square) && @board.valid_en_passant?(from_square, to_square, piece) && !put_in_check?(current_player.king.position)
         capture_en_passant(@board.history.last_move["Pawn"][1])
         remove_from_player_pieces(@board.history.last_move["Pawn"][1])
         @board.store_move(from_square, to_square)
