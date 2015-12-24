@@ -1,11 +1,16 @@
 class Game
-  attr_accessor :board #only doing this for irb tests
+  attr_accessor :board, :mock_hash #only doing this for irb tests
   def initialize
     @player1 = Player.new("white")
     @player2 = Player.new("black")
     @board = Board.new
     set_opening_positions
+    initialize_mock_hash
     @current_turn = 1
+  end
+
+  def initialize_mock_hash
+    @mock_hash = @board.deep_copy(@board.square_hash)
   end
 
   def set_opening_positions
@@ -81,6 +86,30 @@ class Game
     # print_game_result
   end
 
+  def square_under_attack?(square)
+    opponent.pieces.any? do |i|
+      opponent.valid_move?(@board.square_hash[i.position], @board.square_hash[square], i)
+    end
+  end
+
+  def threatening_piece(square)
+    opponent.pieces.find do |i|
+      opponent.valid_move?(@board.square_hash[i.position], @board.square_hash[square], i)   
+    end
+  end
+
+  def put_in_check?
+    if square_under_attack?(current_player.king.position) &&  @board.path_clear?(@mock_hash[threatening_piece(current_player.king.position).position], @mock_hash[current_player.king.position], opponent.color, @mock_hash) 
+      true
+    else
+      false
+    end
+  end
+
+  def mock_move(from_square, to_square)
+    @board.place_piece(from_square, to_square)
+  end
+
   def move(player) 
     puts "Which piece would you like to move '#{player.color} player'? (please choose a square ex: c2)
           \nIf you would like to 'castle', please type castle"
@@ -102,9 +131,10 @@ class Game
       piece = @board.square_hash[choice].piece_on_square
       puts "To where would you like to move that #{piece.class}?"
       new_square = gets.chomp.downcase
+      mock_move(@mock_hash[choice], @mock_hash[new_square])
       from_square = @board.square_hash[choice]
       to_square = @board.square_hash[new_square]
-      if !@board.square_free?(new_square) && current_player.valid_move?(from_square, to_square, piece) && @board.path_clear?(from_square, to_square, piece.color)
+      if !@board.square_free?(new_square) && player.valid_move?(from_square, to_square, piece) && @board.path_clear?(from_square, to_square, piece.color) && !put_in_check?
         capture_piece(to_square)
         @board.store_move(from_square, to_square)
         remove_from_player_pieces(to_square)
@@ -112,22 +142,22 @@ class Game
         @board.place_piece(from_square, to_square)
         player.set_position(piece, to_square)
         @current_turn += 1   
-      elsif @board.square_free?(new_square) && current_player.valid_move?(from_square, to_square, piece) && @board.path_clear?(from_square, to_square, piece.color)
+      elsif @board.square_free?(new_square) && player.valid_move?(from_square, to_square, piece) && @board.path_clear?(from_square, to_square, piece.color) && !put_in_check?
         @board.store_move(from_square, to_square)
         adjust_instance_methods(piece)
         @board.place_piece(from_square, to_square)
         player.set_position(piece, to_square)
         @current_turn += 1
-      elsif @current_turn > 1 && current_player.en_passant_move?(from_square, to_square, piece) && @board.square_free?(new_square) && @board.valid_en_passant?(from_square, to_square, piece)
+      elsif @current_turn > 1 && player.en_passant_move?(from_square, to_square, piece) && @board.square_free?(new_square) && @board.valid_en_passant?(from_square, to_square, piece) && !put_in_check?
         capture_en_passant(@board.history.last_move["Pawn"][1])
         remove_from_player_pieces(@board.history.last_move["Pawn"][1])
         @board.store_move(from_square, to_square)
         @board.place_piece(from_square, to_square)
         player.set_position(piece, to_square)
-        #need to add piece capture mechanism here
         @current_turn += 1
       else
         puts "Invalid move, please choose again"
+        initialize_mock_hash
       end
       
     elsif @board.square_free?(choice)
