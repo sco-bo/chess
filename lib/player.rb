@@ -27,8 +27,10 @@ class Player
   end
 
   def valid_move?(from_square, to_square, piece)
-    if piece.class == Pawn && (to_square.x == from_square.x)
+    if piece.class == Pawn && (to_square.x == from_square.x) && to_square.piece_on_square.nil?
       piece.get_valid_moves(from_square, to_square)
+    elsif piece.class == Pawn && (to_square.x == from_square.x) && !to_square.piece_on_square.nil?
+      false
     elsif piece.class == Pawn && (to_square.x != from_square.x) && !to_square.piece_on_square.nil? && (to_square.piece_on_square.color != piece.color)
       piece.get_valid_captures(from_square, to_square)
     elsif piece.class == Pawn && (to_square.x != from_square.x) && (to_square.piece_on_square.nil? || to_square.piece_on_square.color == piece.color)
@@ -53,6 +55,8 @@ class Player
   end
 
   def set_position(piece, to_square)
+    p piece
+    p to_square
     piece.position = to_square.coordinates
   end
 
@@ -78,6 +82,8 @@ class Player
 
   def pieces_on_initial_square?
     if self.long_side_rook.on_initial_square && self.king.on_initial_square
+      true
+    elsif self.short_side_rook.on_initial_square && self.king.on_initial_square
       true
     else  
       false

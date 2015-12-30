@@ -87,41 +87,31 @@ class Game
   end
 
   def square_under_attack?(square)
-    opponent.pieces.any? do |i|
-      opponent.valid_move?(@board.square_hash[i.position], @board.square_hash[square], i)
-    end
-  end
-
-  def threatening_piece(square)
-    opponent.pieces.find do |i|
-      opponent.valid_move?(@board.square_hash[i.position], @board.square_hash[square], i)   
-    end
-  end
-
-  def put_in_check?(square)
-    if square_under_attack?(square) &&  @board.path_clear?(@mock_hash[threatening_piece(square).position], @mock_hash[square], opponent.color, @mock_hash) 
-      true
-    else
-      false
+    @mock_hash.any? do |k,v|
+      !v.piece_on_square.nil? && v.piece_on_square.color == opponent.color && opponent.valid_move?(@mock_hash[k], @mock_hash[square], v.piece_on_square) && @board.path_clear?(@mock_hash[k], @mock_hash[square], opponent.color, @mock_hash)
     end
   end
 
   def castle_through_attack?(player_color, castle_side)
-    if player_color == "white" && castle_side == "short" && !put_in_check?("f1") && !put_in_check?("g1")
-      true
-    elsif player_color == "white" && castle_side == "long" && !put_in_check?("d1") && !put_in_check?("c1")
-      true  
-    elsif player_color == "black" && castle_side == "short" && !put_in_check?("f8") && !put_in_check?("g8")
-      true
-    elsif player_color == "black" && castle_side == "long" && !put_in_check?("d8") && !put_in_check?("c8")
-      true
-    else
+    if player_color == "white" && castle_side == "short" && !square_under_attack?("f1") && !square_under_attack?("g1")
       false
+    elsif player_color == "white" && castle_side == "long" && !square_under_attack?("d1") && !square_under_attack?("c1")
+      false  
+    elsif player_color == "black" && castle_side == "short" && !square_under_attack?("f8") && !square_under_attack?("g8")
+      false
+    elsif player_color == "black" && castle_side == "long" && !square_under_attack?("d8") && !square_under_attack?("c8")
+      false
+    else
+      true
     end
   end
 
+  def mock_king_position
+    @mock_hash.find {|k,v| v.piece_on_square.class == King && v.piece_on_square.color == current_player.color}[0]
+  end
+
   def mock_move(from_square, to_square)
-    @board.place_piece(from_square, to_square)
+    @board.place_piece(from_square, to_square) 
   end
 
   def move(player) 
@@ -132,11 +122,19 @@ class Game
       puts "Would you like to castle short (on the kingside) or long (on the queenside)
             \nplease type 'short' or 'long'"  
       castle_side = gets.chomp.downcase
-      if castle_side == "short" && @board.valid_short_castle?(player.color) && player.pieces_on_initial_square? && !castle_through_attack?(current_player.color, castle_side)
-        @board.castle_short_side(player) 
+      if castle_side == "short" && @board.valid_short_castle?(player.color) && player.pieces_on_initial_square? && !castle_through_attack?(player.color, castle_side)
+        @board.castle_short_side(player) # look at simplifying this with new_short_king method
+        adjust_instance_methods(player.king)
+        adjust_instance_methods(player.short_side_rook)
+        player.set_position(player.king, new_short_king_position)
+        player.set_position(player.short_side_rook, new_short_rook_position)
         @current_turn += 1 
-      elsif castle_side == "long" && @board.valid_long_castle?(player.color) && player.pieces_on_initial_square? && !castle_through_attack?(current_player.color, castle_side)
+      elsif castle_side == "long" && @board.valid_long_castle?(player.color) && player.pieces_on_initial_square? && !castle_through_attack?(player.color, castle_side)
         @board.castle_long_side(player)
+        adjust_instance_methods(player.king)
+        adjust_instance_methods(player.long_side_rook)
+        player.set_position(player.king, new_long_king_position)
+        player.set_position(player.long_side_rook, new_long_rook_position)
         @current_turn += 1
       else
         puts "Unable to castle"
@@ -146,9 +144,10 @@ class Game
       puts "To where would you like to move that #{piece.class}?"
       new_square = gets.chomp.downcase
       mock_move(@mock_hash[choice], @mock_hash[new_square])
+      @mock_hash[new_square].piece_on_square.position = new_square
       from_square = @board.square_hash[choice]
       to_square = @board.square_hash[new_square]
-      if !@board.square_free?(new_square) && player.valid_move?(from_square, to_square, piece) && @board.path_clear?(from_square, to_square, piece.color) && !put_in_check?(current_player.king.position)
+      if !@board.square_free?(new_square) && player.valid_move?(from_square, to_square, piece) && @board.path_clear?(from_square, to_square, piece.color) && !square_under_attack?(mock_king_position)
         capture_piece(to_square)
         @board.store_move(from_square, to_square)
         remove_from_player_pieces(to_square)
@@ -156,13 +155,13 @@ class Game
         @board.place_piece(from_square, to_square)
         player.set_position(piece, to_square)
         @current_turn += 1   
-      elsif @board.square_free?(new_square) && player.valid_move?(from_square, to_square, piece) && @board.path_clear?(from_square, to_square, piece.color) && !put_in_check?(current_player.king.position)
+      elsif @board.square_free?(new_square) && player.valid_move?(from_square, to_square, piece) && @board.path_clear?(from_square, to_square, piece.color) && !square_under_attack?(mock_king_position)
         @board.store_move(from_square, to_square)
         adjust_instance_methods(piece)
         @board.place_piece(from_square, to_square)
         player.set_position(piece, to_square)
         @current_turn += 1
-      elsif @current_turn > 1 && player.en_passant_move?(from_square, to_square, piece) && @board.square_free?(new_square) && @board.valid_en_passant?(from_square, to_square, piece) && !put_in_check?(current_player.king.position)
+      elsif @current_turn > 1 && player.en_passant_move?(from_square, to_square, piece) && @board.square_free?(new_square) && @board.valid_en_passant?(from_square, to_square, piece) && !square_under_attack?(mock_king_position)
         capture_en_passant(@board.history.last_move["Pawn"][1])
         remove_from_player_pieces(@board.history.last_move["Pawn"][1])
         @board.store_move(from_square, to_square)
@@ -171,12 +170,28 @@ class Game
         @current_turn += 1
       else
         puts "Invalid move, please choose again"
-        initialize_mock_hash
+       initialize_mock_hash
       end
       
     elsif @board.square_free?(choice)
       puts "You do not have a piece there, please choose again"
     end
+  end
+
+  def new_short_king_position
+    @current_turn.even? ? @board.square_hash["g8"] : @board.square_hash["g1"]
+  end
+
+  def new_short_rook_position
+    @current_turn.even? ? @board.square_hash["f8"] : @board.square_hash["f1"]
+  end
+
+  def new_long_king_position
+    @current_turn.even? ? @board.square_hash["c8"] : @board.square_hash["c1"]
+  end
+
+  def new_long_rook_position
+    @current_turn.even? ? @board.square_hash["d8"] : @board.square_hash["d1"]
   end
 
   def adjust_instance_methods(piece)

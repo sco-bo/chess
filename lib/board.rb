@@ -2,6 +2,7 @@ class Board
   attr_accessor :square_hash, :history, :last_move
   Letters = ("a".."h").to_a
   Numbers = (1..8).to_a
+  Letters_hash = {1=>"a", 2=>"b", 3=>"c", 4=>"d", 5=>"e", 6=>"f", 7=>"g", 8=>"h"}
   def initialize
     @history = History.new
     @square_hash = Hash.new
@@ -169,6 +170,16 @@ class Board
     end      
   end
 
+  def valid_long_castle?(player_color)
+    if player_color == "white" && square_free?("b1") && square_free?("c1") && square_free?("d1")
+      true
+    elsif player_color == "black" && square_free?("b8") && square_free?("c8") && square_free?("d8")
+      true
+    else
+      false
+    end
+  end
+
   def castle_short_side(player)
     if player.color == "white"
       @square_hash["g1"].piece_on_square = player.king
@@ -186,29 +197,18 @@ class Board
   def castle_long_side(player)
     if player.color == "white"
       @square_hash["c1"].piece_on_square = player.king
-      @square_hash["d1"].piece_on_square = player.short_side_rook
+      @square_hash["d1"].piece_on_square = player.long_side_rook
       @square_hash["e1"].piece_on_square = nil
       @square_hash["a1"].piece_on_square = nil
     elsif player.color == "black"
       @square_hash["c8"].piece_on_square = player.king
-      @square_hash["d8"].piece_on_square = player.short_side_rook
+      @square_hash["d8"].piece_on_square = player.long_side_rook
       @square_hash["e8"].piece_on_square = nil
       @square_hash["a8"].piece_on_square = nil
     end
   end
 
-  def valid_long_castle?(player_color)
-    if player_color == "white" && square_free?("b1") && square_free?("c1") && square_free?("d1")
-      true
-    elsif player_color == "black" && square_free?("b8") && square_free?("c8") && square_free?("d8")
-      true
-    else
-      false
-    end
-  end
-
   def path_clear?(from_square, to_square, player_color, board_hash=@square_hash)
-    letters_hash = {1=>"a", 2=>"b", 3=>"c", 4=>"d", 5=>"e", 6=>"f", 7=>"g", 8=>"h"}
     if from_square.piece_type == Knight && (square_free?(to_square.coordinates, board_hash) || !same_color_on_square?(to_square.coordinates, player_color, board_hash))
       true
     elsif from_square.piece_type == Knight && same_color_on_square?(to_square.coordinates, player_color, board_hash)
@@ -217,11 +217,12 @@ class Board
     elsif diagonal_up_right?(from_square, to_square)
        (to_square.x - from_square.x).times do |i| 
         i += 1
-        if square_free?("#{letters_hash[from_square.x + i]}#{from_square.y + i}", board_hash)
+        if square_free?("#{Letters_hash[from_square.x + i]}#{from_square.y + i}", board_hash)
           true
         elsif (from_square.x + i  == to_square.x) && (from_square.y + i  == to_square.y) && !same_color_on_square?(to_square.coordinates, player_color, board_hash)
           true 
         else 
+          puts "failing in path_clear"
           puts "Piece(s) in way" unless board_hash != @square_hash
           false
           break
@@ -230,7 +231,7 @@ class Board
     elsif diagonal_down_right?(from_square, to_square)
       (to_square.x - from_square.x).times do |i| 
         i += 1
-        if square_free?("#{letters_hash[from_square.x + i]}#{from_square.y - i}", board_hash)
+        if square_free?("#{Letters_hash[from_square.x + i]}#{from_square.y - i}", board_hash)
           true
         elsif (from_square.x + i  == to_square.x) && (from_square.y - i  == to_square.y) && !same_color_on_square?(to_square.coordinates, player_color, board_hash)
           true
@@ -243,7 +244,7 @@ class Board
     elsif diagonal_down_left?(from_square, to_square)
       (from_square.x - to_square.x).times do |i|
         i += 1
-        if square_free?("#{letters_hash[from_square.x - i]}#{from_square.y - i}", board_hash)
+        if square_free?("#{Letters_hash[from_square.x - i]}#{from_square.y - i}", board_hash)
           true
         elsif (from_square.x - i == to_square.x) && (from_square.y - i == to_square.y) && !same_color_on_square?(to_square.coordinates, player_color, board_hash)
           true
@@ -256,7 +257,7 @@ class Board
     elsif diagonal_up_left?(from_square, to_square)
       (from_square.x - to_square.x).times do |i|
         i += 1
-        if square_free?("#{letters_hash[from_square.x - i]}#{from_square.y + i}", board_hash)
+        if square_free?("#{Letters_hash[from_square.x - i]}#{from_square.y + i}", board_hash)
           true
         elsif (from_square.x - i == to_square.x) && (from_square.y + i == to_square.y) && !same_color_on_square?(to_square.coordinates, player_color, board_hash)
           true
@@ -269,7 +270,7 @@ class Board
     elsif horizontal_left?(from_square, to_square)
       (from_square.x - to_square.x).times do |i| 
         i += 1
-        if square_free?("#{letters_hash[from_square.x - i]}#{from_square.y}", board_hash)
+        if square_free?("#{Letters_hash[from_square.x - i]}#{from_square.y}", board_hash)
           true
         elsif from_square.x - i == to_square.x && !same_color_on_square?(to_square.coordinates, player_color, board_hash)
           true
@@ -282,7 +283,7 @@ class Board
     elsif horizontal_right?(from_square, to_square)
       (to_square.x - from_square.x).times do |i|
         i += 1
-        if square_free?("#{letters_hash[from_square.x + i]}#{from_square.y}", board_hash)
+        if square_free?("#{Letters_hash[from_square.x + i]}#{from_square.y}", board_hash)
           true
         elsif from_square.x + i == to_square.x && !same_color_on_square?(to_square.coordinates, player_color, board_hash)
           true
@@ -295,7 +296,7 @@ class Board
     elsif down?(from_square, to_square) 
       (from_square.y - to_square.y).times do |i|
         i += 1
-        if square_free?("#{letters_hash[from_square.x]}#{from_square.y - i}", board_hash)
+        if square_free?("#{Letters_hash[from_square.x]}#{from_square.y - i}", board_hash)
           true
         elsif from_square.y - i == to_square.y && !same_color_on_square?(to_square.coordinates, player_color, board_hash)
           true
@@ -308,7 +309,7 @@ class Board
     elsif up?(from_square, to_square)
        (to_square.y - from_square.y).times do |i|
         i += 1
-        if square_free?("#{letters_hash[from_square.x]}#{from_square.y + i}", board_hash)
+        if square_free?("#{Letters_hash[from_square.x]}#{from_square.y + i}", board_hash)
           true
         elsif from_square.y + i == to_square.y && !same_color_on_square?(to_square.coordinates, player_color, board_hash)
           true
