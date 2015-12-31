@@ -73,8 +73,8 @@ class Game
   end
 
   def play_game
-    while @current_turn <= 5
-      puts @board.square_hash
+    while @current_turn <= 20
+      puts @board
       move(current_player) #only structured for irb
       # while !@board.checkmate && !draw?
       #   move(current_player)

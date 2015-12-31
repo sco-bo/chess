@@ -25,6 +25,29 @@ class Board
     @history.snapshot.push(@simplified_board)
   end
 
+  def to_s
+    board_string = "\t  a  b  c  d  e  f  g  h  \n\t"
+    Numbers.each_with_index do |number, index|
+      board_string += "#{Numbers[7 - index]}"
+      Letters.each do |letter|
+        if !@square_hash["#{letter}#{9 - number}"].piece_on_square.nil?
+          board_string += " #{@square_hash["#{letter}#{9 - number}"].piece_on_square.unicode} "
+        else 
+          board_string += "   "
+        end
+      end
+      board_string += " #{Numbers[7 - index]}\n\t"
+    # Letters.each_with_index do |letter, index|
+    #   board_string += "#{Numbers[7 - index]}"
+    #   Numbers.each do |n|
+    #     board_string +=  " #{letter}#{n} "
+    #   end
+    #   board_string += " #{Numbers[7 - index]}\n\t"
+    end
+    board_string += "  a  b  c  d  e  f  g  h  \n"
+    board_string
+  end
+
   def store_move(starting_square, final_square)
     @history.last_move = {}
     @history.last_move["#{starting_square.piece_on_square.class}"] = [starting_square, final_square]

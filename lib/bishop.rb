@@ -1,6 +1,12 @@
 class Bishop < Piece
   def initialize(color)
     super(color)
+    case @color
+    when "black"
+      @unicode = "\u2657"
+    when "white"
+      @unicode = "\u265D"
+    end
   end
 
   def self.get_valid_moves(from_square, to_square)

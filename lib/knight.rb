@@ -1,6 +1,12 @@
 class Knight < Piece
   def initialize(color)
     super(color)
+    case @color 
+    when "black"
+      @unicode = "\u2658"
+    when "white"
+      @unicode = "\u265E"
+    end
   end
 
   def self.get_valid_moves(from_square, to_square)
