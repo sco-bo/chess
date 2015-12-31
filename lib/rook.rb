@@ -1,7 +1,8 @@
 class Rook < Piece
   attr_accessor :on_initial_square
-  def initialize(color)
+  def initialize(color, position=nil)
     super(color)
+    @position = position
     @on_initial_square = true
     case @color 
     when "black"

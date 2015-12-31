@@ -1,6 +1,7 @@
 class Knight < Piece
-  def initialize(color)
+  def initialize(color, position=nil)
     super(color)
+    @position = position
     case @color 
     when "black"
       @unicode = "\u2658"

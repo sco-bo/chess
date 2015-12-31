@@ -37,12 +37,6 @@ class Board
         end
       end
       board_string += " #{Numbers[7 - index]}\n\t"
-    # Letters.each_with_index do |letter, index|
-    #   board_string += "#{Numbers[7 - index]}"
-    #   Numbers.each do |n|
-    #     board_string +=  " #{letter}#{n} "
-    #   end
-    #   board_string += " #{Numbers[7 - index]}\n\t"
     end
     board_string += "  a  b  c  d  e  f  g  h  \n"
     board_string
@@ -146,11 +140,10 @@ class Board
     end
   end
 
-  def move_allowed?(from_square, to_square, piece)
-    #path_clear?(from_square, to_square, piece.color)
-    #!in_check?
-    #valid_en_passant?(from_square, to_square, piece)
-
+  def pawn_promotion?
+    @square_hash.any? do |k,v|
+      (v.y == 8 && v.piece_on_square.class == Pawn) || (v.y == 1 && v.piece_on_square.class == Pawn)
+    end
   end
 
   def pawn_advance_two_squares?

@@ -5,11 +5,11 @@ class Game
     @player2 = Player.new("black")
     @board = Board.new
     set_opening_positions
-    initialize_mock_hash
+    refresh_mock_hash
     @current_turn = 1
   end
 
-  def initialize_mock_hash
+  def refresh_mock_hash
     @mock_hash = @board.deep_copy(@board.square_hash)
   end
 
@@ -82,6 +82,7 @@ class Game
       #   @board.store_board
       # end
       @board.store_board
+      @board.pawn_promotion?
     end
     # print_game_result
   end
@@ -170,9 +171,14 @@ class Game
         @current_turn += 1
       else
         puts "Invalid move, please choose again"
-       initialize_mock_hash
+       refresh_mock_hash
       end
-      
+      if @board.pawn_promotion?
+        puts "Your pawn is eligible for promotion
+              \nTo what piece would you like to promote that pawn (Knight, Bishop, Rook, Queen)"
+        new_piece = gets.chomp.capitalize
+        player.promote_pawn(to_square, new_piece)
+      end
     elsif @board.square_free?(choice)
       puts "You do not have a piece there, please choose again"
     end
@@ -206,6 +212,15 @@ class Game
 
   def opponent
     @current_turn.even? ? @player1 : @player2
+  end
+
+  def print_game_result
+    if @board.checkmate
+      puts "Checkmate by #{opponent}"
+      puts "Game Over"
+    elsif draw?
+      puts "draw"
+    end
   end
 
   def draw?

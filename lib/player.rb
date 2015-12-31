@@ -22,6 +22,11 @@ class Player
               ]
   end
 
+  def promote_pawn(square, piece)
+    square.piece_on_square = Object.const_get(piece).new(color, square.coordinates)
+    @pieces << square.piece_on_square
+  end
+
   def choose_player_piece(type)
     @pieces.find {|i| i.class == type && i.position == nil}
   end
@@ -40,12 +45,6 @@ class Player
     end
   end
 
-  def in_check?(from_square, to_square)
-    if from_square.nil?
-
-    end
-  end
-
   def en_passant_move?(from_square, to_square, piece)
     if piece.class == Pawn 
       piece.get_en_passant_moves(from_square, to_square)
@@ -55,8 +54,6 @@ class Player
   end
 
   def set_position(piece, to_square)
-    p piece
-    p to_square
     piece.position = to_square.coordinates
   end
 
