@@ -1,5 +1,5 @@
 class King < Piece
-  attr_accessor :on_initial_square, :color
+  attr_accessor :on_initial_square, :color, :valid_children
   def initialize(color)
     super(color)
     @on_initial_square = true
@@ -9,6 +9,7 @@ class King < Piece
     when "white"
       @unicode = "\u265A"
     end
+
   end
 
   def self.get_valid_moves(from_square, to_square)

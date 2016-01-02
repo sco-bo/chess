@@ -76,6 +76,7 @@ class Game
     while @current_turn <= 20
       puts @board
       move(current_player) #only structured for irb
+      refresh_mock_hash 
       # while !@board.checkmate && !draw?
       #   move(current_player)
       #   puts @board
@@ -94,13 +95,13 @@ class Game
   end
 
   def castle_through_attack?(player_color, castle_side)
-    if player_color == "white" && castle_side == "short" && !square_under_attack?("f1") && !square_under_attack?("g1")
+    if player_color == "white" && castle_side == "short" && !square_under_attack?("e1") && !square_under_attack?("f1") && !square_under_attack?("g1")
       false
-    elsif player_color == "white" && castle_side == "long" && !square_under_attack?("d1") && !square_under_attack?("c1")
+    elsif player_color == "white" && castle_side == "long" && !square_under_attack?("e1") && !square_under_attack?("d1") && !square_under_attack?("c1")
       false  
-    elsif player_color == "black" && castle_side == "short" && !square_under_attack?("f8") && !square_under_attack?("g8")
+    elsif player_color == "black" && castle_side == "short" && !square_under_attack?("e8") && !square_under_attack?("f8") && !square_under_attack?("g8")
       false
-    elsif player_color == "black" && castle_side == "long" && !square_under_attack?("d8") && !square_under_attack?("c8")
+    elsif player_color == "black" && castle_side == "long" &&  !square_under_attack?("e8") && !square_under_attack?("d8") && !square_under_attack?("c8")
       false
     else
       true
@@ -171,7 +172,7 @@ class Game
         @current_turn += 1
       else
         puts "Invalid move, please choose again"
-       refresh_mock_hash
+        refresh_mock_hash
       end
       if @board.pawn_promotion?
         puts "Your pawn is eligible for promotion
@@ -179,7 +180,7 @@ class Game
         new_piece = gets.chomp.capitalize
         player.promote_pawn(to_square, new_piece)
       end
-    elsif @board.square_free?(choice)
+    elsif @board.square_free?(choice) || !@board.same_color_on_square?(choice, player.color)
       puts "You do not have a piece there, please choose again"
     end
   end
