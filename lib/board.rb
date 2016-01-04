@@ -51,9 +51,9 @@ class Board
     @simplified_board = {}
     @square_hash.each do |k,v|
       if v.piece_on_square.nil?
-        simplified_board[k] = v.piece_on_square
+        @simplified_board[k] = nil
       else
-        simplified_board[k] = v.piece_on_square.class.to_s
+        @simplified_board[k] = v.piece_on_square.class.to_s
       end
     end
     @simplified_board
@@ -157,9 +157,7 @@ class Board
   end
 
   def valid_en_passant?(from_square, to_square, piece)
-    if piece.class != Pawn
-      false
-    elsif pawn_advance_two_squares? && adjacent_to_piece?(to_square, piece)
+    if piece.class == Pawn && pawn_advance_two_squares? && adjacent_to_piece?(to_square, piece)
       true
     else
       false       
@@ -176,47 +174,37 @@ class Board
     end
   end
 
-  def valid_short_castle?(player_color)
-    if player_color == "white" && square_free?("f1") && square_free?("g1")
+  def valid_castle?(castle_side, player_color)
+    if castle_side == "short" && player_color == "white" && square_free?("f1") && square_free?("g1")
       true
-    elsif player_color == "black" && square_free?("f8") && square_free?("g8")
+    elsif castle_side == "short" && player_color == "black" && square_free?("f8") && square_free?("g8")
       true
-    else
-      false
-    end      
-  end
-
-  def valid_long_castle?(player_color)
-    if player_color == "white" && square_free?("b1") && square_free?("c1") && square_free?("d1")
+    elsif castle_side == "long" && player_color == "white" && square_free?("b1") && square_free?("c1") && square_free?("d1")
       true
-    elsif player_color == "black" && square_free?("b8") && square_free?("c8") && square_free?("d8")
+    elsif castle_side == "long" && player_color == "black" && square_free?("b8") && square_free?("c8") && square_free?("d8")
       true
-    else
+    else 
       false
     end
   end
 
-  def castle_short_side(player)
-    if player.color == "white"
+  def castle(castle_side, player)
+    if castle_side == "short" && player.color == "white"
       @square_hash["g1"].piece_on_square = player.king
       @square_hash["f1"].piece_on_square = player.short_side_rook
       @square_hash["e1"].piece_on_square = nil
       @square_hash["h1"].piece_on_square = nil
-    elsif player.color == "black"
+    elsif castle_side == "short" && player.color == "black"
       @square_hash["g8"].piece_on_square = player.king
       @square_hash["f8"].piece_on_square = player.short_side_rook
       @square_hash["e8"].piece_on_square = nil
       @square_hash["h8"].piece_on_square = nil
-    end
-  end
-
-  def castle_long_side(player)
-    if player.color == "white"
+    elsif castle_side == "long" && player.color == "white"
       @square_hash["c1"].piece_on_square = player.king
       @square_hash["d1"].piece_on_square = player.long_side_rook
       @square_hash["e1"].piece_on_square = nil
       @square_hash["a1"].piece_on_square = nil
-    elsif player.color == "black"
+    elsif castle_side == "long" && player.color == "black"
       @square_hash["c8"].piece_on_square = player.king
       @square_hash["d8"].piece_on_square = player.long_side_rook
       @square_hash["e8"].piece_on_square = nil
@@ -228,7 +216,6 @@ class Board
     if from_square.piece_type == Knight && (square_free?(to_square.coordinates, board_hash) || !same_color_on_square?(to_square.coordinates, player_color, board_hash))
       true
     elsif from_square.piece_type == Knight && same_color_on_square?(to_square.coordinates, player_color, board_hash)
-      puts "Piece(s) in way"
       false
     elsif diagonal_up_right?(from_square, to_square)
        (to_square.x - from_square.x).times do |i| 
@@ -238,10 +225,7 @@ class Board
         elsif (from_square.x + i  == to_square.x) && (from_square.y + i  == to_square.y) && !same_color_on_square?(to_square.coordinates, player_color, board_hash)
           true 
         else 
-          puts "failing in path_clear"
-          puts "Piece(s) in way" unless board_hash != @square_hash
-          false
-          break
+          break false
         end
       end
     elsif diagonal_down_right?(from_square, to_square)
@@ -252,9 +236,7 @@ class Board
         elsif (from_square.x + i  == to_square.x) && (from_square.y - i  == to_square.y) && !same_color_on_square?(to_square.coordinates, player_color, board_hash)
           true
         else 
-          puts "Piece(s) in way" unless board_hash != @square_hash
-          false
-          break
+          break false
         end
       end
     elsif diagonal_down_left?(from_square, to_square)
@@ -265,9 +247,7 @@ class Board
         elsif (from_square.x - i == to_square.x) && (from_square.y - i == to_square.y) && !same_color_on_square?(to_square.coordinates, player_color, board_hash)
           true
         else
-          puts "Piece(s) in way" unless board_hash != @square_hash
-          false
-          break
+          break false
         end
       end
     elsif diagonal_up_left?(from_square, to_square)
@@ -278,9 +258,7 @@ class Board
         elsif (from_square.x - i == to_square.x) && (from_square.y + i == to_square.y) && !same_color_on_square?(to_square.coordinates, player_color, board_hash)
           true
         else  
-          puts "Piece(s) in way" unless board_hash != @square_hash
-          false
-          break
+          break false
         end
       end
     elsif horizontal_left?(from_square, to_square)
@@ -291,9 +269,7 @@ class Board
         elsif from_square.x - i == to_square.x && !same_color_on_square?(to_square.coordinates, player_color, board_hash)
           true
         else 
-          puts "Piece(s) in way" unless board_hash != @square_hash
-          false
-          break
+          break false
         end
       end
     elsif horizontal_right?(from_square, to_square)
@@ -304,9 +280,7 @@ class Board
         elsif from_square.x + i == to_square.x && !same_color_on_square?(to_square.coordinates, player_color, board_hash)
           true
         else 
-          puts "Piece(s) in way" unless board_hash != @square_hash
-          false
-          break
+          break false
         end
       end
     elsif down?(from_square, to_square) 
@@ -317,9 +291,7 @@ class Board
         elsif from_square.y - i == to_square.y && !same_color_on_square?(to_square.coordinates, player_color, board_hash)
           true
         else 
-          puts "Piece(s) in way" unless board_hash != @square_hash
-          false
-          break
+          break false
         end
       end
     elsif up?(from_square, to_square)
@@ -330,9 +302,7 @@ class Board
         elsif from_square.y + i == to_square.y && !same_color_on_square?(to_square.coordinates, player_color, board_hash)
           true
         else 
-          puts "Piece(s) in way" unless board_hash != @square_hash
-          false
-          break
+          break false
         end
       end
     else 

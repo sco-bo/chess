@@ -73,25 +73,44 @@ class Game
   end
 
   def play_game
-    while @current_turn <= 20
+    while !checkmate? && !draw?
       puts @board
-      move(current_player) #only structured for irb
-      refresh_mock_hash 
-      # while !@board.checkmate && !draw?
-      #   move(current_player)
-      #   puts @board
-      #   @board.store_board
-      # end
+      move(current_player)
+      refresh_mock_hash
       @board.store_board
-      @board.pawn_promotion?
     end
-    # print_game_result
+    print_game_result
   end
 
   def square_under_attack?(square)
     @mock_hash.any? do |k,v|
-      !v.piece_on_square.nil? && v.piece_on_square.color == opponent.color && opponent.valid_move?(@mock_hash[k], @mock_hash[square], v.piece_on_square) && @board.path_clear?(@mock_hash[k], @mock_hash[square], opponent.color, @mock_hash)
+      !v.piece_on_square.nil? && v.piece_on_square.color == opponent.color && move_ok?(opponent, @mock_hash[k], @mock_hash[square], v.piece_on_square, @mock_hash) 
     end
+  end
+
+  def threatening_pieces
+    opponent.pieces.find_all do |i|
+      move_ok?(opponent, @mock_hash[i.position], @mock_hash[mock_king_position], i, @mock_hash)
+    end
+  end
+
+  def checkmate?
+    current_player.pieces.each do |i|
+      @mock_hash.each do |k,v|
+        next if @mock_hash[i.position] == @mock_hash[k] || k == mock_king_position
+        mock_move(@mock_hash[i.position], @mock_hash[k]) 
+        @moves_unavailable = true
+        if move_ok?(current_player, @board.square_hash[i.position], @board.square_hash[k], i) 
+          refresh_mock_hash
+          @moves_unavailable = false
+          break @moves_unavailable
+        else
+          refresh_mock_hash
+        end
+      end
+      break if !@moves_unavailable 
+    end
+    @moves_unavailable
   end
 
   def castle_through_attack?(player_color, castle_side)
@@ -101,7 +120,7 @@ class Game
       false  
     elsif player_color == "black" && castle_side == "short" && !square_under_attack?("e8") && !square_under_attack?("f8") && !square_under_attack?("g8")
       false
-    elsif player_color == "black" && castle_side == "long" &&  !square_under_attack?("e8") && !square_under_attack?("d8") && !square_under_attack?("c8")
+    elsif player_color == "black" && castle_side == "long" && !square_under_attack?("e8") && !square_under_attack?("d8") && !square_under_attack?("c8")
       false
     else
       true
@@ -116,6 +135,18 @@ class Game
     @board.place_piece(from_square, to_square) 
   end
 
+  def move_ok?(player, from_square, to_square, piece, board=@board.square_hash)
+    if player == current_player
+      return player.valid_move?(from_square, to_square, piece) && @board.path_clear?(from_square, to_square, piece.color, board) && !square_under_attack?(mock_king_position)
+    elsif player == opponent
+      return opponent.valid_move?(from_square, to_square, piece) && @board.path_clear?(from_square, to_square, piece.color, board)
+    end
+  end
+
+  def castle_ok?(player, castle_side)
+    return player.pieces_on_initial_square? && !castle_through_attack?(player.color, castle_side)
+  end
+
   def move(player) 
     puts "Which piece would you like to move '#{player.color} player'? (please choose a square ex: c2)
           \nIf you would like to 'castle', please type castle"
@@ -124,15 +155,15 @@ class Game
       puts "Would you like to castle short (on the kingside) or long (on the queenside)
             \nplease type 'short' or 'long'"  
       castle_side = gets.chomp.downcase
-      if castle_side == "short" && @board.valid_short_castle?(player.color) && player.pieces_on_initial_square? && !castle_through_attack?(player.color, castle_side)
-        @board.castle_short_side(player) # look at simplifying this with new_short_king method
+      if castle_side == "short" && @board.valid_castle?(castle_side, player.color) && castle_ok?(player, castle_side) 
+        @board.castle(castle_side, player)
         adjust_instance_methods(player.king)
         adjust_instance_methods(player.short_side_rook)
         player.set_position(player.king, new_short_king_position)
         player.set_position(player.short_side_rook, new_short_rook_position)
         @current_turn += 1 
-      elsif castle_side == "long" && @board.valid_long_castle?(player.color) && player.pieces_on_initial_square? && !castle_through_attack?(player.color, castle_side)
-        @board.castle_long_side(player)
+      elsif castle_side == "long" && @board.valid_castle?(castle_side, player.color) && castle_ok?(player, castle_side) 
+        @board.castle(castle_side, player)
         adjust_instance_methods(player.king)
         adjust_instance_methods(player.long_side_rook)
         player.set_position(player.king, new_long_king_position)
@@ -149,7 +180,7 @@ class Game
       @mock_hash[new_square].piece_on_square.position = new_square
       from_square = @board.square_hash[choice]
       to_square = @board.square_hash[new_square]
-      if !@board.square_free?(new_square) && player.valid_move?(from_square, to_square, piece) && @board.path_clear?(from_square, to_square, piece.color) && !square_under_attack?(mock_king_position)
+      if !@board.square_free?(new_square) && move_ok?(player, from_square, to_square, piece) 
         capture_piece(to_square)
         @board.store_move(from_square, to_square)
         remove_from_player_pieces(to_square)
@@ -157,7 +188,7 @@ class Game
         @board.place_piece(from_square, to_square)
         player.set_position(piece, to_square)
         @current_turn += 1   
-      elsif @board.square_free?(new_square) && player.valid_move?(from_square, to_square, piece) && @board.path_clear?(from_square, to_square, piece.color) && !square_under_attack?(mock_king_position)
+      elsif @board.square_free?(new_square) && move_ok?(player, from_square, to_square, piece) 
         @board.store_move(from_square, to_square)
         adjust_instance_methods(piece)
         @board.place_piece(from_square, to_square)
@@ -216,8 +247,9 @@ class Game
   end
 
   def print_game_result
-    if @board.checkmate
-      puts "Checkmate by #{opponent}"
+    if checkmate?
+      puts @board
+      puts "Checkmate by #{opponent.color} player"
       puts "Game Over"
     elsif draw?
       puts "draw"
