@@ -88,12 +88,6 @@ class Game
     end
   end
 
-  def threatening_pieces
-    opponent.pieces.find_all do |i|
-      move_ok?(opponent, @mock_hash[i.position], @mock_hash[mock_king_position], i, @mock_hash)
-    end
-  end
-
   def checkmate?
     current_player.pieces.each do |i|
       @mock_hash.each do |k,v|
