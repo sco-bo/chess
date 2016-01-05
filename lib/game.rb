@@ -89,22 +89,38 @@ class Game
   end
 
   def checkmate?
+    if !move_available? && square_under_attack?(mock_king_position)
+     true
+   else
+    false
+    end
+  end
+
+  def stalemate?
+    if !move_available? && !square_under_attack?(mock_king_position)
+      true
+    else
+      false
+    end
+  end
+
+  def move_available?
     current_player.pieces.each do |i|
       @mock_hash.each do |k,v|
         next if @mock_hash[i.position] == @mock_hash[k] || k == mock_king_position
         mock_move(@mock_hash[i.position], @mock_hash[k]) 
-        @moves_unavailable = true
+        @available_move = false
         if move_ok?(current_player, @board.square_hash[i.position], @board.square_hash[k], i) 
           refresh_mock_hash
-          @moves_unavailable = false
-          break @moves_unavailable
+          @available_move = true
+          break @available_move
         else
           refresh_mock_hash
         end
       end
-      break if !@moves_unavailable 
+      break if @available_move 
     end
-    @moves_unavailable
+    @available_move
   end
 
   def castle_through_attack?(player_color, castle_side)
@@ -241,12 +257,12 @@ class Game
   end
 
   def print_game_result
-    if checkmate?
+    if checkmate? 
       puts @board
       puts "Checkmate by #{opponent.color} player"
       puts "Game Over"
     elsif draw?
-      puts "draw"
+      puts "This game is a draw"
     end
   end
 
@@ -260,10 +276,6 @@ class Game
     else
       false
     end
-  end
-
-  def stalemate?
-
   end
 
   def fifty_moves?
