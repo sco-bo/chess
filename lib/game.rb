@@ -161,7 +161,9 @@ class Game
     puts "Which piece would you like to move '#{player.color} player'? (please choose a square ex: c2)
           \nIf you would like to 'castle', please type castle"
     choice = gets.chomp.downcase
-    if choice == "castle"
+    if @board.square_hash[choice].nil?
+      puts "Error. Please choose again"
+    elsif choice == "castle"
       puts "Would you like to castle short (on the kingside) or long (on the queenside)
             \nplease type 'short' or 'long'"  
       castle_side = gets.chomp.downcase
@@ -186,11 +188,13 @@ class Game
       piece = @board.square_hash[choice].piece_on_square
       puts "To where would you like to move that #{piece.class}?"
       new_square = gets.chomp.downcase
-      mock_move(@mock_hash[choice], @mock_hash[new_square])
-      @mock_hash[new_square].piece_on_square.position = new_square
+      mock_move(@mock_hash[choice], @mock_hash[new_square]) unless @board.square_hash[new_square].nil?
+      @mock_hash[new_square].piece_on_square.position = new_square unless @board.square_hash[new_square].nil?
       from_square = @board.square_hash[choice]
       to_square = @board.square_hash[new_square]
-      if !@board.square_free?(new_square) && move_ok?(player, from_square, to_square, piece) 
+      if @board.square_hash[new_square].nil?
+        puts "Error. Please choose again"
+      elsif !@board.square_free?(new_square) && move_ok?(player, from_square, to_square, piece) 
         capture_piece(to_square)
         @board.store_move(from_square, to_square)
         remove_from_player_pieces(to_square)
@@ -222,7 +226,7 @@ class Game
         player.promote_pawn(to_square, new_piece)
       end
     elsif @board.square_free?(choice) || !@board.same_color_on_square?(choice, player.color)
-      puts "You do not have a piece there, please choose again"
+      puts "You do not have a piece there, please choose again" 
     end
   end
 
