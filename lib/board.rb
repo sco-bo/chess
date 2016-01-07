@@ -7,6 +7,7 @@ class Board
     @history = History.new
     @square_hash = Hash.new
     assign_coordinate_names
+    @white_background = false
   end
 
   def deep_copy(i)
@@ -22,7 +23,7 @@ class Board
   end
 
   def store_board
-    @history.snapshot.push(@simplified_board)
+    @history.snapshot.push(simplified_board)
   end
 
   def to_s
@@ -31,15 +32,26 @@ class Board
       board_string += "#{Numbers[7 - index]}"
       Letters.each do |letter|
         if !@square_hash["#{letter}#{9 - number}"].piece_on_square.nil?
-          board_string += " #{@square_hash["#{letter}#{9 - number}"].piece_on_square.unicode} "
+          board_string += color_background(" #{@square_hash["#{letter}#{9 - number}"].piece_on_square.unicode} ")
         else 
-          board_string += "   "
+          board_string += color_background("   ")
         end
+        @white_background = !@white_background
       end
+      @white_background = !@white_background
       board_string += " #{Numbers[7 - index]}\n\t"
     end
     board_string += "  a  b  c  d  e  f  g  h  \n"
     board_string
+  end
+
+  def color_background(string)
+    if @white_background
+      string = string.on_black
+    else
+      string = string.on_white
+    end
+    string
   end
 
   def store_move(starting_square, final_square)
@@ -47,7 +59,7 @@ class Board
     @history.last_move["#{starting_square.piece_on_square.class}"] = [starting_square, final_square]
   end
 
-  def create_simplified_board
+  def simplified_board
     @simplified_board = {}
     @square_hash.each do |k,v|
       if v.piece_on_square.nil?

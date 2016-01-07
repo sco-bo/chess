@@ -262,6 +262,7 @@ class Game
       puts "Checkmate by #{opponent.color} player"
       puts "Game Over"
     elsif draw?
+      puts @board
       puts "This game is a draw"
     end
   end

@@ -1,3 +1,4 @@
+require 'colored'
 require './lib/player'
 require './lib/board'
 require './lib/history'
