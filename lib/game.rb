@@ -272,7 +272,7 @@ class Game
   end
 
   def draw?
-    if threefold_repition? 
+    if threefold_repetition? 
       true
     elsif stalemate?
       true
@@ -287,9 +287,9 @@ class Game
 
   end
 
-  def threefold_repition?
+  def threefold_repetition?
     snapshot_array = @board.history.snapshot
-    if snapshot_array.detect {|i| snapshot_array.count(i) > 3}
+    if snapshot_array.detect {|i| snapshot_array.count(i) > 3} && snapshot_array.each_with_index.none? {|x,index| x == snapshot_array[index + 1]}
       true
     else
       false
