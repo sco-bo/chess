@@ -283,8 +283,24 @@ class Game
     end
   end
 
-  def fifty_moves?
+  def no_pawns?
+    @board.square_hash.none? {|_,v| v.piece_on_square.class == Pawn}
+  end
 
+
+
+  def insufficient_material? 
+    # if no_pawns? &&
+
+  end
+
+  def fifty_moves?
+    snapshot_array = @board.history.snapshot
+    if snapshot_array.length > 50 && snapshot_array.last.values.count(nil) == snapshot_array[-50].values.count(nil) && (snapshot_array.last.reject {|_,v| v != "Pawn"} == snapshot_array[-50].reject {|_,v| v != "Pawn"})
+      true
+    else
+      false
+    end
   end
 
   def threefold_repetition?
