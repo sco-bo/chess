@@ -33,6 +33,7 @@ class Game
         @player1.choose_player_piece(Knight).position = value.coordinates
       when "c1", "f1"
         value.piece_on_square = @player1.choose_player_piece(Bishop)
+        @player1.choose_player_piece(Bishop).origin = value.coordinates
         @player1.choose_player_piece(Bishop).position = value.coordinates
       when "d1" 
         value.piece_on_square = @player1.choose_player_piece(Queen)
@@ -48,6 +49,7 @@ class Game
         @player2.choose_player_piece(Knight).position = value.coordinates
       when "c8", "f8"
         value.piece_on_square = @player2.choose_player_piece(Bishop)
+        @player2.choose_player_piece(Bishop).origin = value.coordinates
         @player2.choose_player_piece(Bishop).position = value.coordinates
       when "d8"
         value.piece_on_square = @player2.choose_player_piece(Queen)
@@ -278,20 +280,63 @@ class Game
       true
     elsif fifty_moves?
       true
+    elsif insufficient_material?
+      true
     else
       false
     end
   end
 
   def no_pawns?
-    @board.square_hash.none? {|_,v| v.piece_on_square.class == Pawn}
+    return current_player.pieces.none? {|i| i.class == Pawn} && opponent.pieces.none? {|i| i.class == Pawn}
   end
 
+  def only_kings?
+    return current_player.pieces.all? {|i| i.class == King} && opponent.pieces.all? {|i| i.class == King}
+  end
 
+  def only_king_and_knight_or_bishop? 
+    if current_player.pieces.all? {|i| i.class == King} && opponent.pieces.length == 2 && opponent.knight_and_king_only?
+      true   
+    elsif current_player.pieces.length == 2 && current_player.knight_and_king_only? && opponent.pieces.all? {|i| i.class == King}
+      true
+    elsif current_player.pieces.all? {|i| i.class == King} && opponent.pieces.length == 2 && opponent.bishop_and_king_only?
+      true
+    elsif current_player.pieces.length == 2 && current_player.bishop_and_king_only? && opponent.pieces.all? {|i| i.class == King}
+      true
+    else
+      false
+    end
+  end
+
+  def bishops_same_color? #revisit this, could be made a bit more DRY
+    if current_player.bishop_origin == "c1" && opponent.bishop_origin == "f8"
+      true
+    elsif current_player.bishop_origin == "f8" && opponent.bishop_origin == "c1"
+      true
+    elsif current_player.bishop_origin == "f1" && opponent.bishop_origin == "c8"
+      true
+    elsif current_player.bishop_origin == "c8" && opponent.bishop_origin == "f1"
+      true
+    else
+      false
+    end
+  end
+
+  def bishops_kings? 
+    if current_player.pieces.length == 2 && current_player.bishop_and_king_only? && opponent.pieces.length == 2 && opponent.pieces.bishop_and_king_only?
+      true
+    else
+      false
+    end
+  end
 
   def insufficient_material? 
-    # if no_pawns? &&
-
+    if (no_pawns? && only_kings?) || (no_pawns? && only_king_and_knight_or_bishop?) || (bishops_kings? && bishops_same_color?)
+      true
+    else
+      false
+    end
   end
 
   def fifty_moves?

@@ -45,6 +45,18 @@ class Player
     end
   end
 
+  def bishop_and_king_only?
+    @pieces.all? {|i| i.class == King || i.class == Bishop}
+  end
+
+  def knight_and_king_only?
+    @pieces.all? {|i| i.class == King || i.class == Knight}
+  end
+
+  def bishop_origin
+    @pieces.find {|i| i.class == Bishop}.origin
+  end
+
   def en_passant_move?(from_square, to_square, piece)
     if piece.class == Pawn 
       piece.get_en_passant_moves(from_square, to_square)

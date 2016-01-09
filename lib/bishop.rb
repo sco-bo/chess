@@ -1,7 +1,9 @@
 class Bishop < Piece
-  def initialize(color, position=nil)
+  attr_accessor :origin
+  def initialize(color, position=nil, origin=nil)
     super(color)
     @position = position
+    @origin = origin
     case @color
     when "black"
       @unicode = "\u2657"
