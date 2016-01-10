@@ -309,7 +309,7 @@ class Game
     end
   end
 
-  def bishops_same_color? #revisit this, could be made a bit more DRY
+  def bishops_same_color? 
     if current_player.bishop_origin == "c1" && opponent.bishop_origin == "f8"
       true
     elsif current_player.bishop_origin == "f8" && opponent.bishop_origin == "c1"
@@ -324,7 +324,7 @@ class Game
   end
 
   def bishops_kings? 
-    if current_player.pieces.length == 2 && current_player.bishop_and_king_only? && opponent.pieces.length == 2 && opponent.pieces.bishop_and_king_only?
+    if current_player.pieces.length == 2 && current_player.bishop_and_king_only? && opponent.pieces.length == 2 && opponent.bishop_and_king_only?
       true
     else
       false
