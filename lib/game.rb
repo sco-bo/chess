@@ -1,16 +1,35 @@
 class Game
-  attr_accessor :board, :mock_hash #only doing this for irb tests
+  attr_accessor :board
   def initialize
     @player1 = Player.new("white")
     @player2 = Player.new("black")
     @board = Board.new
+    @current_turn = 1
     set_opening_positions
     refresh_mock_hash
-    @current_turn = 1
   end
 
   def refresh_mock_hash
     @mock_hash = @board.deep_copy(@board.square_hash)
+  end
+
+  def load_game
+    puts "Would you like to load the last game you saved? (yes or no)"
+    response = gets.chomp
+    load_or_play(response)
+  end
+
+  def load_or_play(response)
+    if response == "yes"
+      output = File.new('game_state.yaml', 'r')
+      data = YAML.load(output.read)
+      @player1 = data[0]
+      @player2 = data[1]
+      @board = data[2]
+      @current_turn = data[3]
+      @mock_hash = data[4]
+      output.close
+    end
   end
 
   def set_opening_positions
@@ -75,6 +94,7 @@ class Game
   end
 
   def play_game
+    load_game
     while !checkmate? && !draw?
       puts @board
       move(current_player)
@@ -159,15 +179,26 @@ class Game
     return player.pieces_on_initial_square? && !castle_through_attack?(player.color, castle_side)
   end
 
+  def exit_game
+    abort("Goodbye")
+  end
+
   def move(player) 
-    puts "Which piece would you like to move '#{player.color} player'? (please choose a square ex: c2)
-          \nIf you would like to 'castle', please type castle"
+    puts "Type 'save' to save your game
+          \nIf you would like to 'castle', please type castle
+          \nWhich piece would you like to move '#{player.color} player'? (please choose a square ex: c2)"
     choice = gets.chomp.downcase
-    if @board.square_hash[choice].nil?
-      puts "Error. Please choose again"
+    if choice == "save"
+      data = [@player1, @player2, @board, @current_turn, @mock_hash]
+      output = File.new('game_state.yaml', 'w')
+      output.puts YAML.dump(data)
+      output.close
+      exit_game
+    elsif choice != "castle" && @board.square_hash[choice].nil?
+      puts "Error. Please choose again".red
     elsif choice == "castle"
       puts "Would you like to castle short (on the kingside) or long (on the queenside)
-            \nplease type 'short' or 'long'"  
+            \nplease type 'short' or 'long'".cyan  
       castle_side = gets.chomp.downcase
       if castle_side == "short" && @board.valid_castle?(castle_side, player.color) && castle_ok?(player, castle_side) 
         @board.castle(castle_side, player)
@@ -184,18 +215,18 @@ class Game
         player.set_position(player.long_side_rook, new_long_rook_position)
         @current_turn += 1
       else
-        puts "Unable to castle"
+        puts "Unable to castle".red
       end
     elsif @board.same_color_on_square?(choice, player.color)
       piece = @board.square_hash[choice].piece_on_square
-      puts "To where would you like to move that #{piece.class}?"
+      puts "To where would you like to move that #{piece.class}?".green
       new_square = gets.chomp.downcase
       mock_move(@mock_hash[choice], @mock_hash[new_square]) unless @board.square_hash[new_square].nil?
       @mock_hash[new_square].piece_on_square.position = new_square unless @board.square_hash[new_square].nil?
       from_square = @board.square_hash[choice]
       to_square = @board.square_hash[new_square]
       if @board.square_hash[new_square].nil?
-        puts "Error. Please choose again"
+        puts "Error. Please choose again".red
       elsif !@board.square_free?(new_square) && move_ok?(player, from_square, to_square, piece) 
         capture_piece(to_square)
         @board.store_move(from_square, to_square)
@@ -218,17 +249,17 @@ class Game
         player.set_position(piece, to_square)
         @current_turn += 1
       else
-        puts "Invalid move, please choose again"
+        puts "Invalid move, please choose again".red
         refresh_mock_hash
       end
       if @board.pawn_promotion?
         puts "Your pawn is eligible for promotion
-              \nTo what piece would you like to promote that pawn (Knight, Bishop, Rook, Queen)"
+              \nTo what piece would you like to promote that pawn (Knight, Bishop, Rook, Queen)".cyan
         new_piece = gets.chomp.capitalize
         player.promote_pawn(to_square, new_piece)
       end
     elsif @board.square_free?(choice) || !@board.same_color_on_square?(choice, player.color)
-      puts "You do not have a piece there, please choose again" 
+      puts "You do not have a piece there, please choose again".red
     end
   end
 
@@ -265,11 +296,11 @@ class Game
   def print_game_result
     if checkmate? 
       puts @board
-      puts "Checkmate by #{opponent.color} player"
-      puts "Game Over"
+      puts "Checkmate by #{opponent.color} player".green
+      puts "Game Over".cyan
     elsif draw?
       puts @board
-      puts "This game is a draw"
+      puts "This game is a draw".yellow
     end
   end
 

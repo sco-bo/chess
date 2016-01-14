@@ -11,18 +11,19 @@ require './lib/knight'
 require './lib/bishop'
 require './lib/queen'
 require './lib/king'
+require 'yaml'
 
-# def play_again?
-#   puts "Play again? (yes or no)"
-#   answer = gets.chomp.downcase
-#   return answer == "yes"
-# end
+def play_again?
+  puts "Play again? (yes or no)".green
+  answer = gets.chomp.downcase
+  return answer == "yes"
+end
 
-# loop do 
-#   Game.new.play_game
-#   unless play_again?
-#     puts "Goodbye"
-#     break
-#   end
-# end
+loop do 
+  Game.new.play_game
+  unless play_again?
+    puts "Goodbye"
+    break
+  end
+end
 

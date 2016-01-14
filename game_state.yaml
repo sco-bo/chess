@@ -1,0 +1,1761 @@
+---
+- !ruby/object:Player
+  color: white
+  captured_pieces:
+  - !ruby/object:Pawn
+    color: black
+    position: d5
+    on_initial_square: false
+    unicode: "♙"
+  - !ruby/object:Pawn
+    color: black
+    position: c7
+    on_initial_square: true
+    unicode: "♙"
+  - !ruby/object:Knight
+    color: black
+    position: b8
+    unicode: "♘"
+  pieces:
+  - &3 !ruby/object:Pawn
+    color: white
+    position: a2
+    on_initial_square: true
+    unicode: "♟"
+  - &7 !ruby/object:Pawn
+    color: white
+    position: b2
+    on_initial_square: true
+    unicode: "♟"
+  - !ruby/object:Pawn
+    color: white
+    position: b8
+    on_initial_square: false
+    unicode: "♟"
+  - &14 !ruby/object:Pawn
+    color: white
+    position: d2
+    on_initial_square: true
+    unicode: "♟"
+  - &17 !ruby/object:Pawn
+    color: white
+    position: e2
+    on_initial_square: true
+    unicode: "♟"
+  - &21 !ruby/object:Pawn
+    color: white
+    position: f2
+    on_initial_square: true
+    unicode: "♟"
+  - &25 !ruby/object:Pawn
+    color: white
+    position: g3
+    on_initial_square: false
+    unicode: "♟"
+  - &29 !ruby/object:Pawn
+    color: white
+    position: h2
+    on_initial_square: true
+    unicode: "♟"
+  - &2 !ruby/object:Rook
+    color: white
+    position: a1
+    on_initial_square: true
+    unicode: "♜"
+  - &28 !ruby/object:Rook
+    color: white
+    position: h1
+    on_initial_square: true
+    unicode: "♜"
+  - &6 !ruby/object:Knight
+    color: white
+    position: b1
+    unicode: "♞"
+  - &24 !ruby/object:Knight
+    color: white
+    position: g1
+    unicode: "♞"
+  - &10 !ruby/object:Bishop
+    color: white
+    position: c1
+    origin: c1
+    unicode: "♝"
+  - &20 !ruby/object:Bishop
+    color: white
+    position: f1
+    origin: f1
+    unicode: "♝"
+  - &13 !ruby/object:Queen
+    color: white
+    position: d1
+    unicode: "♛"
+  - &16 !ruby/object:King
+    color: white
+    position: e1
+    on_initial_square: true
+    unicode: "♚"
+  - &1 !ruby/object:Queen
+    color: white
+    position: b8
+    unicode: "♛"
+- !ruby/object:Player
+  color: black
+  captured_pieces: []
+  pieces:
+  - &4 !ruby/object:Pawn
+    color: black
+    position: a7
+    on_initial_square: true
+    unicode: "♙"
+  - &8 !ruby/object:Pawn
+    color: black
+    position: b7
+    on_initial_square: true
+    unicode: "♙"
+  - &18 !ruby/object:Pawn
+    color: black
+    position: e4
+    on_initial_square: false
+    unicode: "♙"
+  - &22 !ruby/object:Pawn
+    color: black
+    position: f7
+    on_initial_square: true
+    unicode: "♙"
+  - &27 !ruby/object:Pawn
+    color: black
+    position: g7
+    on_initial_square: true
+    unicode: "♙"
+  - &30 !ruby/object:Pawn
+    color: black
+    position: h7
+    on_initial_square: true
+    unicode: "♙"
+  - &5 !ruby/object:Rook
+    color: black
+    position: a8
+    on_initial_square: true
+    unicode: "♖"
+  - &31 !ruby/object:Rook
+    color: black
+    position: h8
+    on_initial_square: true
+    unicode: "♖"
+  - &26 !ruby/object:Knight
+    color: black
+    position: g4
+    unicode: "♘"
+  - &12 !ruby/object:Bishop
+    color: black
+    position: c8
+    origin: c8
+    unicode: "♗"
+  - &23 !ruby/object:Bishop
+    color: black
+    position: f8
+    origin: f8
+    unicode: "♗"
+  - &15 !ruby/object:Queen
+    color: black
+    position: d8
+    unicode: "♕"
+  - &19 !ruby/object:King
+    color: black
+    position: e8
+    on_initial_square: true
+    unicode: "♔"
+- !ruby/object:Board
+  history: !ruby/object:History
+    snapshot:
+    - a1: Rook
+      a2: Pawn
+      a3: 
+      a4: 
+      a5: 
+      a6: 
+      a7: Pawn
+      a8: Rook
+      b1: Knight
+      b2: Pawn
+      b3: 
+      b4: 
+      b5: 
+      b6: 
+      b7: Pawn
+      b8: Knight
+      c1: Bishop
+      c2: Pawn
+      c3: 
+      c4: 
+      c5: 
+      c6: 
+      c7: Pawn
+      c8: Bishop
+      d1: Queen
+      d2: Pawn
+      d3: 
+      d4: 
+      d5: 
+      d6: 
+      d7: Pawn
+      d8: Queen
+      e1: King
+      e2: Pawn
+      e3: 
+      e4: 
+      e5: 
+      e6: 
+      e7: Pawn
+      e8: King
+      f1: Bishop
+      f2: Pawn
+      f3: 
+      f4: 
+      f5: 
+      f6: 
+      f7: Pawn
+      f8: Bishop
+      g1: Knight
+      g2: 
+      g3: Pawn
+      g4: 
+      g5: 
+      g6: 
+      g7: Pawn
+      g8: Knight
+      h1: Rook
+      h2: Pawn
+      h3: 
+      h4: 
+      h5: 
+      h6: 
+      h7: Pawn
+      h8: Rook
+    - a1: Rook
+      a2: Pawn
+      a3: 
+      a4: 
+      a5: 
+      a6: 
+      a7: Pawn
+      a8: Rook
+      b1: Knight
+      b2: Pawn
+      b3: 
+      b4: 
+      b5: 
+      b6: 
+      b7: Pawn
+      b8: Knight
+      c1: Bishop
+      c2: Pawn
+      c3: 
+      c4: 
+      c5: 
+      c6: 
+      c7: Pawn
+      c8: Bishop
+      d1: Queen
+      d2: Pawn
+      d3: 
+      d4: 
+      d5: 
+      d6: 
+      d7: Pawn
+      d8: Queen
+      e1: King
+      e2: Pawn
+      e3: 
+      e4: 
+      e5: 
+      e6: 
+      e7: Pawn
+      e8: King
+      f1: Bishop
+      f2: Pawn
+      f3: 
+      f4: 
+      f5: 
+      f6: Knight
+      f7: Pawn
+      f8: Bishop
+      g1: Knight
+      g2: 
+      g3: Pawn
+      g4: 
+      g5: 
+      g6: 
+      g7: Pawn
+      g8: 
+      h1: Rook
+      h2: Pawn
+      h3: 
+      h4: 
+      h5: 
+      h6: 
+      h7: Pawn
+      h8: Rook
+    - a1: Rook
+      a2: Pawn
+      a3: 
+      a4: 
+      a5: 
+      a6: 
+      a7: Pawn
+      a8: Rook
+      b1: Knight
+      b2: Pawn
+      b3: 
+      b4: 
+      b5: 
+      b6: 
+      b7: Pawn
+      b8: Knight
+      c1: Bishop
+      c2: Pawn
+      c3: 
+      c4: 
+      c5: 
+      c6: 
+      c7: Pawn
+      c8: Bishop
+      d1: Queen
+      d2: Pawn
+      d3: 
+      d4: 
+      d5: 
+      d6: 
+      d7: Pawn
+      d8: Queen
+      e1: King
+      e2: Pawn
+      e3: 
+      e4: 
+      e5: 
+      e6: 
+      e7: Pawn
+      e8: King
+      f1: Bishop
+      f2: Pawn
+      f3: 
+      f4: 
+      f5: 
+      f6: Knight
+      f7: Pawn
+      f8: Bishop
+      g1: Knight
+      g2: 
+      g3: Pawn
+      g4: 
+      g5: 
+      g6: 
+      g7: Pawn
+      g8: 
+      h1: Rook
+      h2: Pawn
+      h3: 
+      h4: 
+      h5: 
+      h6: 
+      h7: Pawn
+      h8: Rook
+    - a1: Rook
+      a2: Pawn
+      a3: 
+      a4: 
+      a5: 
+      a6: 
+      a7: Pawn
+      a8: Rook
+      b1: Knight
+      b2: Pawn
+      b3: 
+      b4: 
+      b5: 
+      b6: 
+      b7: Pawn
+      b8: Knight
+      c1: Bishop
+      c2: Pawn
+      c3: 
+      c4: 
+      c5: 
+      c6: 
+      c7: Pawn
+      c8: Bishop
+      d1: Queen
+      d2: Pawn
+      d3: 
+      d4: 
+      d5: 
+      d6: 
+      d7: Pawn
+      d8: Queen
+      e1: King
+      e2: Pawn
+      e3: 
+      e4: 
+      e5: 
+      e6: 
+      e7: Pawn
+      e8: King
+      f1: Bishop
+      f2: Pawn
+      f3: 
+      f4: 
+      f5: 
+      f6: Knight
+      f7: Pawn
+      f8: Bishop
+      g1: Knight
+      g2: 
+      g3: Pawn
+      g4: 
+      g5: 
+      g6: 
+      g7: Pawn
+      g8: 
+      h1: Rook
+      h2: Pawn
+      h3: 
+      h4: 
+      h5: 
+      h6: 
+      h7: Pawn
+      h8: Rook
+    - a1: Rook
+      a2: Pawn
+      a3: 
+      a4: 
+      a5: 
+      a6: 
+      a7: Pawn
+      a8: Rook
+      b1: Knight
+      b2: Pawn
+      b3: 
+      b4: 
+      b5: 
+      b6: 
+      b7: Pawn
+      b8: Knight
+      c1: Bishop
+      c2: 
+      c3: 
+      c4: Pawn
+      c5: 
+      c6: 
+      c7: Pawn
+      c8: Bishop
+      d1: Queen
+      d2: Pawn
+      d3: 
+      d4: 
+      d5: 
+      d6: 
+      d7: Pawn
+      d8: Queen
+      e1: King
+      e2: Pawn
+      e3: 
+      e4: 
+      e5: 
+      e6: 
+      e7: Pawn
+      e8: King
+      f1: Bishop
+      f2: Pawn
+      f3: 
+      f4: 
+      f5: 
+      f6: Knight
+      f7: Pawn
+      f8: Bishop
+      g1: Knight
+      g2: 
+      g3: Pawn
+      g4: 
+      g5: 
+      g6: 
+      g7: Pawn
+      g8: 
+      h1: Rook
+      h2: Pawn
+      h3: 
+      h4: 
+      h5: 
+      h6: 
+      h7: Pawn
+      h8: Rook
+    - a1: Rook
+      a2: Pawn
+      a3: 
+      a4: 
+      a5: 
+      a6: 
+      a7: Pawn
+      a8: Rook
+      b1: Knight
+      b2: Pawn
+      b3: 
+      b4: 
+      b5: 
+      b6: 
+      b7: Pawn
+      b8: Knight
+      c1: Bishop
+      c2: 
+      c3: 
+      c4: Pawn
+      c5: 
+      c6: 
+      c7: Pawn
+      c8: Bishop
+      d1: Queen
+      d2: Pawn
+      d3: 
+      d4: 
+      d5: 
+      d6: 
+      d7: Pawn
+      d8: Queen
+      e1: King
+      e2: Pawn
+      e3: 
+      e4: 
+      e5: 
+      e6: 
+      e7: Pawn
+      e8: King
+      f1: Bishop
+      f2: Pawn
+      f3: 
+      f4: 
+      f5: 
+      f6: 
+      f7: Pawn
+      f8: Bishop
+      g1: Knight
+      g2: 
+      g3: Pawn
+      g4: Knight
+      g5: 
+      g6: 
+      g7: Pawn
+      g8: 
+      h1: Rook
+      h2: Pawn
+      h3: 
+      h4: 
+      h5: 
+      h6: 
+      h7: Pawn
+      h8: Rook
+    - a1: Rook
+      a2: Pawn
+      a3: 
+      a4: 
+      a5: 
+      a6: 
+      a7: Pawn
+      a8: Rook
+      b1: Knight
+      b2: Pawn
+      b3: 
+      b4: 
+      b5: 
+      b6: 
+      b7: Pawn
+      b8: Knight
+      c1: Bishop
+      c2: 
+      c3: 
+      c4: 
+      c5: Pawn
+      c6: 
+      c7: Pawn
+      c8: Bishop
+      d1: Queen
+      d2: Pawn
+      d3: 
+      d4: 
+      d5: 
+      d6: 
+      d7: Pawn
+      d8: Queen
+      e1: King
+      e2: Pawn
+      e3: 
+      e4: 
+      e5: 
+      e6: 
+      e7: Pawn
+      e8: King
+      f1: Bishop
+      f2: Pawn
+      f3: 
+      f4: 
+      f5: 
+      f6: 
+      f7: Pawn
+      f8: Bishop
+      g1: Knight
+      g2: 
+      g3: Pawn
+      g4: Knight
+      g5: 
+      g6: 
+      g7: Pawn
+      g8: 
+      h1: Rook
+      h2: Pawn
+      h3: 
+      h4: 
+      h5: 
+      h6: 
+      h7: Pawn
+      h8: Rook
+    - a1: Rook
+      a2: Pawn
+      a3: 
+      a4: 
+      a5: 
+      a6: 
+      a7: Pawn
+      a8: Rook
+      b1: Knight
+      b2: Pawn
+      b3: 
+      b4: 
+      b5: 
+      b6: 
+      b7: Pawn
+      b8: Knight
+      c1: Bishop
+      c2: 
+      c3: 
+      c4: 
+      c5: Pawn
+      c6: 
+      c7: Pawn
+      c8: Bishop
+      d1: Queen
+      d2: Pawn
+      d3: 
+      d4: 
+      d5: Pawn
+      d6: 
+      d7: 
+      d8: Queen
+      e1: King
+      e2: Pawn
+      e3: 
+      e4: 
+      e5: 
+      e6: 
+      e7: Pawn
+      e8: King
+      f1: Bishop
+      f2: Pawn
+      f3: 
+      f4: 
+      f5: 
+      f6: 
+      f7: Pawn
+      f8: Bishop
+      g1: Knight
+      g2: 
+      g3: Pawn
+      g4: Knight
+      g5: 
+      g6: 
+      g7: Pawn
+      g8: 
+      h1: Rook
+      h2: Pawn
+      h3: 
+      h4: 
+      h5: 
+      h6: 
+      h7: Pawn
+      h8: Rook
+    - a1: Rook
+      a2: Pawn
+      a3: 
+      a4: 
+      a5: 
+      a6: 
+      a7: Pawn
+      a8: Rook
+      b1: Knight
+      b2: Pawn
+      b3: 
+      b4: 
+      b5: 
+      b6: 
+      b7: Pawn
+      b8: Knight
+      c1: Bishop
+      c2: 
+      c3: 
+      c4: 
+      c5: 
+      c6: 
+      c7: Pawn
+      c8: Bishop
+      d1: Queen
+      d2: Pawn
+      d3: 
+      d4: 
+      d5: 
+      d6: Pawn
+      d7: 
+      d8: Queen
+      e1: King
+      e2: Pawn
+      e3: 
+      e4: 
+      e5: 
+      e6: 
+      e7: Pawn
+      e8: King
+      f1: Bishop
+      f2: Pawn
+      f3: 
+      f4: 
+      f5: 
+      f6: 
+      f7: Pawn
+      f8: Bishop
+      g1: Knight
+      g2: 
+      g3: Pawn
+      g4: Knight
+      g5: 
+      g6: 
+      g7: Pawn
+      g8: 
+      h1: Rook
+      h2: Pawn
+      h3: 
+      h4: 
+      h5: 
+      h6: 
+      h7: Pawn
+      h8: Rook
+    - a1: Rook
+      a2: Pawn
+      a3: 
+      a4: 
+      a5: 
+      a6: 
+      a7: Pawn
+      a8: Rook
+      b1: Knight
+      b2: Pawn
+      b3: 
+      b4: 
+      b5: 
+      b6: 
+      b7: Pawn
+      b8: Knight
+      c1: Bishop
+      c2: 
+      c3: 
+      c4: 
+      c5: 
+      c6: 
+      c7: Pawn
+      c8: Bishop
+      d1: Queen
+      d2: Pawn
+      d3: 
+      d4: 
+      d5: 
+      d6: Pawn
+      d7: 
+      d8: Queen
+      e1: King
+      e2: Pawn
+      e3: 
+      e4: 
+      e5: Pawn
+      e6: 
+      e7: 
+      e8: King
+      f1: Bishop
+      f2: Pawn
+      f3: 
+      f4: 
+      f5: 
+      f6: 
+      f7: Pawn
+      f8: Bishop
+      g1: Knight
+      g2: 
+      g3: Pawn
+      g4: Knight
+      g5: 
+      g6: 
+      g7: Pawn
+      g8: 
+      h1: Rook
+      h2: Pawn
+      h3: 
+      h4: 
+      h5: 
+      h6: 
+      h7: Pawn
+      h8: Rook
+    - a1: Rook
+      a2: Pawn
+      a3: 
+      a4: 
+      a5: 
+      a6: 
+      a7: Pawn
+      a8: Rook
+      b1: Knight
+      b2: Pawn
+      b3: 
+      b4: 
+      b5: 
+      b6: 
+      b7: Pawn
+      b8: Knight
+      c1: Bishop
+      c2: 
+      c3: 
+      c4: 
+      c5: 
+      c6: 
+      c7: Pawn
+      c8: Bishop
+      d1: Queen
+      d2: Pawn
+      d3: 
+      d4: 
+      d5: 
+      d6: 
+      d7: 
+      d8: Queen
+      e1: King
+      e2: Pawn
+      e3: 
+      e4: 
+      e5: Pawn
+      e6: 
+      e7: 
+      e8: King
+      f1: Bishop
+      f2: Pawn
+      f3: 
+      f4: 
+      f5: 
+      f6: 
+      f7: Pawn
+      f8: Bishop
+      g1: Knight
+      g2: 
+      g3: Pawn
+      g4: Knight
+      g5: 
+      g6: 
+      g7: Pawn
+      g8: 
+      h1: Rook
+      h2: Pawn
+      h3: 
+      h4: 
+      h5: 
+      h6: 
+      h7: Pawn
+      h8: Rook
+    - a1: Rook
+      a2: Pawn
+      a3: 
+      a4: 
+      a5: 
+      a6: 
+      a7: Pawn
+      a8: Rook
+      b1: Knight
+      b2: Pawn
+      b3: 
+      b4: 
+      b5: 
+      b6: 
+      b7: Pawn
+      b8: Knight
+      c1: Bishop
+      c2: 
+      c3: 
+      c4: 
+      c5: 
+      c6: 
+      c7: Pawn
+      c8: Bishop
+      d1: Queen
+      d2: Pawn
+      d3: 
+      d4: 
+      d5: 
+      d6: 
+      d7: 
+      d8: Queen
+      e1: King
+      e2: Pawn
+      e3: 
+      e4: Pawn
+      e5: 
+      e6: 
+      e7: 
+      e8: King
+      f1: Bishop
+      f2: Pawn
+      f3: 
+      f4: 
+      f5: 
+      f6: 
+      f7: Pawn
+      f8: Bishop
+      g1: Knight
+      g2: 
+      g3: Pawn
+      g4: Knight
+      g5: 
+      g6: 
+      g7: Pawn
+      g8: 
+      h1: Rook
+      h2: Pawn
+      h3: 
+      h4: 
+      h5: 
+      h6: 
+      h7: Pawn
+      h8: Rook
+    - &32
+      a1: Rook
+      a2: Pawn
+      a3: 
+      a4: 
+      a5: 
+      a6: 
+      a7: Pawn
+      a8: Rook
+      b1: Knight
+      b2: Pawn
+      b3: 
+      b4: 
+      b5: 
+      b6: 
+      b7: Pawn
+      b8: Queen
+      c1: Bishop
+      c2: 
+      c3: 
+      c4: 
+      c5: 
+      c6: 
+      c7: 
+      c8: Bishop
+      d1: Queen
+      d2: Pawn
+      d3: 
+      d4: 
+      d5: 
+      d6: 
+      d7: 
+      d8: Queen
+      e1: King
+      e2: Pawn
+      e3: 
+      e4: Pawn
+      e5: 
+      e6: 
+      e7: 
+      e8: King
+      f1: Bishop
+      f2: Pawn
+      f3: 
+      f4: 
+      f5: 
+      f6: 
+      f7: Pawn
+      f8: Bishop
+      g1: Knight
+      g2: 
+      g3: Pawn
+      g4: Knight
+      g5: 
+      g6: 
+      g7: Pawn
+      g8: 
+      h1: Rook
+      h2: Pawn
+      h3: 
+      h4: 
+      h5: 
+      h6: 
+      h7: Pawn
+      h8: Rook
+    last_move:
+      Pawn:
+      - &11 !ruby/object:Square
+        piece_on_square: 
+        x: 3
+        y: 7
+        coordinates: c7
+      - &9 !ruby/object:Square
+        piece_on_square: *1
+        x: 2
+        y: 8
+        coordinates: b8
+  square_hash:
+    a1: !ruby/object:Square
+      piece_on_square: *2
+      x: 1
+      y: 1
+      coordinates: a1
+    a2: !ruby/object:Square
+      piece_on_square: *3
+      x: 1
+      y: 2
+      coordinates: a2
+    a3: !ruby/object:Square
+      piece_on_square: 
+      x: 1
+      y: 3
+      coordinates: a3
+    a4: !ruby/object:Square
+      piece_on_square: 
+      x: 1
+      y: 4
+      coordinates: a4
+    a5: !ruby/object:Square
+      piece_on_square: 
+      x: 1
+      y: 5
+      coordinates: a5
+    a6: !ruby/object:Square
+      piece_on_square: 
+      x: 1
+      y: 6
+      coordinates: a6
+    a7: !ruby/object:Square
+      piece_on_square: *4
+      x: 1
+      y: 7
+      coordinates: a7
+    a8: !ruby/object:Square
+      piece_on_square: *5
+      x: 1
+      y: 8
+      coordinates: a8
+    b1: !ruby/object:Square
+      piece_on_square: *6
+      x: 2
+      y: 1
+      coordinates: b1
+    b2: !ruby/object:Square
+      piece_on_square: *7
+      x: 2
+      y: 2
+      coordinates: b2
+    b3: !ruby/object:Square
+      piece_on_square: 
+      x: 2
+      y: 3
+      coordinates: b3
+    b4: !ruby/object:Square
+      piece_on_square: 
+      x: 2
+      y: 4
+      coordinates: b4
+    b5: !ruby/object:Square
+      piece_on_square: 
+      x: 2
+      y: 5
+      coordinates: b5
+    b6: !ruby/object:Square
+      piece_on_square: 
+      x: 2
+      y: 6
+      coordinates: b6
+    b7: !ruby/object:Square
+      piece_on_square: *8
+      x: 2
+      y: 7
+      coordinates: b7
+    b8: *9
+    c1: !ruby/object:Square
+      piece_on_square: *10
+      x: 3
+      y: 1
+      coordinates: c1
+    c2: !ruby/object:Square
+      piece_on_square: 
+      x: 3
+      y: 2
+      coordinates: c2
+    c3: !ruby/object:Square
+      piece_on_square: 
+      x: 3
+      y: 3
+      coordinates: c3
+    c4: !ruby/object:Square
+      piece_on_square: 
+      x: 3
+      y: 4
+      coordinates: c4
+    c5: !ruby/object:Square
+      piece_on_square: 
+      x: 3
+      y: 5
+      coordinates: c5
+    c6: !ruby/object:Square
+      piece_on_square: 
+      x: 3
+      y: 6
+      coordinates: c6
+    c7: *11
+    c8: !ruby/object:Square
+      piece_on_square: *12
+      x: 3
+      y: 8
+      coordinates: c8
+    d1: !ruby/object:Square
+      piece_on_square: *13
+      x: 4
+      y: 1
+      coordinates: d1
+    d2: !ruby/object:Square
+      piece_on_square: *14
+      x: 4
+      y: 2
+      coordinates: d2
+    d3: !ruby/object:Square
+      piece_on_square: 
+      x: 4
+      y: 3
+      coordinates: d3
+    d4: !ruby/object:Square
+      piece_on_square: 
+      x: 4
+      y: 4
+      coordinates: d4
+    d5: !ruby/object:Square
+      piece_on_square: 
+      x: 4
+      y: 5
+      coordinates: d5
+    d6: !ruby/object:Square
+      piece_on_square: 
+      x: 4
+      y: 6
+      coordinates: d6
+    d7: !ruby/object:Square
+      piece_on_square: 
+      x: 4
+      y: 7
+      coordinates: d7
+    d8: !ruby/object:Square
+      piece_on_square: *15
+      x: 4
+      y: 8
+      coordinates: d8
+    e1: !ruby/object:Square
+      piece_on_square: *16
+      x: 5
+      y: 1
+      coordinates: e1
+    e2: !ruby/object:Square
+      piece_on_square: *17
+      x: 5
+      y: 2
+      coordinates: e2
+    e3: !ruby/object:Square
+      piece_on_square: 
+      x: 5
+      y: 3
+      coordinates: e3
+    e4: !ruby/object:Square
+      piece_on_square: *18
+      x: 5
+      y: 4
+      coordinates: e4
+    e5: !ruby/object:Square
+      piece_on_square: 
+      x: 5
+      y: 5
+      coordinates: e5
+    e6: !ruby/object:Square
+      piece_on_square: 
+      x: 5
+      y: 6
+      coordinates: e6
+    e7: !ruby/object:Square
+      piece_on_square: 
+      x: 5
+      y: 7
+      coordinates: e7
+    e8: !ruby/object:Square
+      piece_on_square: *19
+      x: 5
+      y: 8
+      coordinates: e8
+    f1: !ruby/object:Square
+      piece_on_square: *20
+      x: 6
+      y: 1
+      coordinates: f1
+    f2: !ruby/object:Square
+      piece_on_square: *21
+      x: 6
+      y: 2
+      coordinates: f2
+    f3: !ruby/object:Square
+      piece_on_square: 
+      x: 6
+      y: 3
+      coordinates: f3
+    f4: !ruby/object:Square
+      piece_on_square: 
+      x: 6
+      y: 4
+      coordinates: f4
+    f5: !ruby/object:Square
+      piece_on_square: 
+      x: 6
+      y: 5
+      coordinates: f5
+    f6: !ruby/object:Square
+      piece_on_square: 
+      x: 6
+      y: 6
+      coordinates: f6
+    f7: !ruby/object:Square
+      piece_on_square: *22
+      x: 6
+      y: 7
+      coordinates: f7
+    f8: !ruby/object:Square
+      piece_on_square: *23
+      x: 6
+      y: 8
+      coordinates: f8
+    g1: !ruby/object:Square
+      piece_on_square: *24
+      x: 7
+      y: 1
+      coordinates: g1
+    g2: !ruby/object:Square
+      piece_on_square: 
+      x: 7
+      y: 2
+      coordinates: g2
+    g3: !ruby/object:Square
+      piece_on_square: *25
+      x: 7
+      y: 3
+      coordinates: g3
+    g4: !ruby/object:Square
+      piece_on_square: *26
+      x: 7
+      y: 4
+      coordinates: g4
+    g5: !ruby/object:Square
+      piece_on_square: 
+      x: 7
+      y: 5
+      coordinates: g5
+    g6: !ruby/object:Square
+      piece_on_square: 
+      x: 7
+      y: 6
+      coordinates: g6
+    g7: !ruby/object:Square
+      piece_on_square: *27
+      x: 7
+      y: 7
+      coordinates: g7
+    g8: !ruby/object:Square
+      piece_on_square: 
+      x: 7
+      y: 8
+      coordinates: g8
+    h1: !ruby/object:Square
+      piece_on_square: *28
+      x: 8
+      y: 1
+      coordinates: h1
+    h2: !ruby/object:Square
+      piece_on_square: *29
+      x: 8
+      y: 2
+      coordinates: h2
+    h3: !ruby/object:Square
+      piece_on_square: 
+      x: 8
+      y: 3
+      coordinates: h3
+    h4: !ruby/object:Square
+      piece_on_square: 
+      x: 8
+      y: 4
+      coordinates: h4
+    h5: !ruby/object:Square
+      piece_on_square: 
+      x: 8
+      y: 5
+      coordinates: h5
+    h6: !ruby/object:Square
+      piece_on_square: 
+      x: 8
+      y: 6
+      coordinates: h6
+    h7: !ruby/object:Square
+      piece_on_square: *30
+      x: 8
+      y: 7
+      coordinates: h7
+    h8: !ruby/object:Square
+      piece_on_square: *31
+      x: 8
+      y: 8
+      coordinates: h8
+  white_background: false
+  simplified_board: *32
+- 12
+- a1: !ruby/object:Square
+    piece_on_square: !ruby/object:Rook
+      color: white
+      position: a1
+      on_initial_square: true
+      unicode: "♜"
+    x: 1
+    y: 1
+    coordinates: a1
+  a2: !ruby/object:Square
+    piece_on_square: !ruby/object:Pawn
+      color: white
+      position: a2
+      on_initial_square: true
+      unicode: "♟"
+    x: 1
+    y: 2
+    coordinates: a2
+  a3: !ruby/object:Square
+    piece_on_square: 
+    x: 1
+    y: 3
+    coordinates: a3
+  a4: !ruby/object:Square
+    piece_on_square: 
+    x: 1
+    y: 4
+    coordinates: a4
+  a5: !ruby/object:Square
+    piece_on_square: 
+    x: 1
+    y: 5
+    coordinates: a5
+  a6: !ruby/object:Square
+    piece_on_square: 
+    x: 1
+    y: 6
+    coordinates: a6
+  a7: !ruby/object:Square
+    piece_on_square: !ruby/object:Pawn
+      color: black
+      position: a7
+      on_initial_square: true
+      unicode: "♙"
+    x: 1
+    y: 7
+    coordinates: a7
+  a8: !ruby/object:Square
+    piece_on_square: !ruby/object:Rook
+      color: black
+      position: a8
+      on_initial_square: true
+      unicode: "♖"
+    x: 1
+    y: 8
+    coordinates: a8
+  b1: !ruby/object:Square
+    piece_on_square: !ruby/object:Knight
+      color: white
+      position: b1
+      unicode: "♞"
+    x: 2
+    y: 1
+    coordinates: b1
+  b2: !ruby/object:Square
+    piece_on_square: !ruby/object:Pawn
+      color: white
+      position: b2
+      on_initial_square: true
+      unicode: "♟"
+    x: 2
+    y: 2
+    coordinates: b2
+  b3: !ruby/object:Square
+    piece_on_square: 
+    x: 2
+    y: 3
+    coordinates: b3
+  b4: !ruby/object:Square
+    piece_on_square: 
+    x: 2
+    y: 4
+    coordinates: b4
+  b5: !ruby/object:Square
+    piece_on_square: 
+    x: 2
+    y: 5
+    coordinates: b5
+  b6: !ruby/object:Square
+    piece_on_square: 
+    x: 2
+    y: 6
+    coordinates: b6
+  b7: !ruby/object:Square
+    piece_on_square: !ruby/object:Pawn
+      color: black
+      position: b7
+      on_initial_square: true
+      unicode: "♙"
+    x: 2
+    y: 7
+    coordinates: b7
+  b8: !ruby/object:Square
+    piece_on_square: !ruby/object:Queen
+      color: white
+      position: b8
+      unicode: "♛"
+    x: 2
+    y: 8
+    coordinates: b8
+  c1: !ruby/object:Square
+    piece_on_square: !ruby/object:Bishop
+      color: white
+      position: c1
+      origin: c1
+      unicode: "♝"
+    x: 3
+    y: 1
+    coordinates: c1
+  c2: !ruby/object:Square
+    piece_on_square: 
+    x: 3
+    y: 2
+    coordinates: c2
+  c3: !ruby/object:Square
+    piece_on_square: 
+    x: 3
+    y: 3
+    coordinates: c3
+  c4: !ruby/object:Square
+    piece_on_square: 
+    x: 3
+    y: 4
+    coordinates: c4
+  c5: !ruby/object:Square
+    piece_on_square: 
+    x: 3
+    y: 5
+    coordinates: c5
+  c6: !ruby/object:Square
+    piece_on_square: 
+    x: 3
+    y: 6
+    coordinates: c6
+  c7: !ruby/object:Square
+    piece_on_square: 
+    x: 3
+    y: 7
+    coordinates: c7
+  c8: !ruby/object:Square
+    piece_on_square: !ruby/object:Bishop
+      color: black
+      position: c8
+      origin: c8
+      unicode: "♗"
+    x: 3
+    y: 8
+    coordinates: c8
+  d1: !ruby/object:Square
+    piece_on_square: !ruby/object:Queen
+      color: white
+      position: d1
+      unicode: "♛"
+    x: 4
+    y: 1
+    coordinates: d1
+  d2: !ruby/object:Square
+    piece_on_square: !ruby/object:Pawn
+      color: white
+      position: d2
+      on_initial_square: true
+      unicode: "♟"
+    x: 4
+    y: 2
+    coordinates: d2
+  d3: !ruby/object:Square
+    piece_on_square: 
+    x: 4
+    y: 3
+    coordinates: d3
+  d4: !ruby/object:Square
+    piece_on_square: 
+    x: 4
+    y: 4
+    coordinates: d4
+  d5: !ruby/object:Square
+    piece_on_square: 
+    x: 4
+    y: 5
+    coordinates: d5
+  d6: !ruby/object:Square
+    piece_on_square: 
+    x: 4
+    y: 6
+    coordinates: d6
+  d7: !ruby/object:Square
+    piece_on_square: 
+    x: 4
+    y: 7
+    coordinates: d7
+  d8: !ruby/object:Square
+    piece_on_square: !ruby/object:Queen
+      color: black
+      position: d8
+      unicode: "♕"
+    x: 4
+    y: 8
+    coordinates: d8
+  e1: !ruby/object:Square
+    piece_on_square: !ruby/object:King
+      color: white
+      position: e1
+      on_initial_square: true
+      unicode: "♚"
+    x: 5
+    y: 1
+    coordinates: e1
+  e2: !ruby/object:Square
+    piece_on_square: !ruby/object:Pawn
+      color: white
+      position: e2
+      on_initial_square: true
+      unicode: "♟"
+    x: 5
+    y: 2
+    coordinates: e2
+  e3: !ruby/object:Square
+    piece_on_square: 
+    x: 5
+    y: 3
+    coordinates: e3
+  e4: !ruby/object:Square
+    piece_on_square: !ruby/object:Pawn
+      color: black
+      position: e4
+      on_initial_square: false
+      unicode: "♙"
+    x: 5
+    y: 4
+    coordinates: e4
+  e5: !ruby/object:Square
+    piece_on_square: 
+    x: 5
+    y: 5
+    coordinates: e5
+  e6: !ruby/object:Square
+    piece_on_square: 
+    x: 5
+    y: 6
+    coordinates: e6
+  e7: !ruby/object:Square
+    piece_on_square: 
+    x: 5
+    y: 7
+    coordinates: e7
+  e8: !ruby/object:Square
+    piece_on_square: !ruby/object:King
+      color: black
+      position: e8
+      on_initial_square: true
+      unicode: "♔"
+    x: 5
+    y: 8
+    coordinates: e8
+  f1: !ruby/object:Square
+    piece_on_square: !ruby/object:Bishop
+      color: white
+      position: f1
+      origin: f1
+      unicode: "♝"
+    x: 6
+    y: 1
+    coordinates: f1
+  f2: !ruby/object:Square
+    piece_on_square: !ruby/object:Pawn
+      color: white
+      position: f2
+      on_initial_square: true
+      unicode: "♟"
+    x: 6
+    y: 2
+    coordinates: f2
+  f3: !ruby/object:Square
+    piece_on_square: 
+    x: 6
+    y: 3
+    coordinates: f3
+  f4: !ruby/object:Square
+    piece_on_square: 
+    x: 6
+    y: 4
+    coordinates: f4
+  f5: !ruby/object:Square
+    piece_on_square: 
+    x: 6
+    y: 5
+    coordinates: f5
+  f6: !ruby/object:Square
+    piece_on_square: 
+    x: 6
+    y: 6
+    coordinates: f6
+  f7: !ruby/object:Square
+    piece_on_square: !ruby/object:Pawn
+      color: black
+      position: f7
+      on_initial_square: true
+      unicode: "♙"
+    x: 6
+    y: 7
+    coordinates: f7
+  f8: !ruby/object:Square
+    piece_on_square: !ruby/object:Bishop
+      color: black
+      position: f8
+      origin: f8
+      unicode: "♗"
+    x: 6
+    y: 8
+    coordinates: f8
+  g1: !ruby/object:Square
+    piece_on_square: !ruby/object:Knight
+      color: white
+      position: g1
+      unicode: "♞"
+    x: 7
+    y: 1
+    coordinates: g1
+  g2: !ruby/object:Square
+    piece_on_square: 
+    x: 7
+    y: 2
+    coordinates: g2
+  g3: !ruby/object:Square
+    piece_on_square: !ruby/object:Pawn
+      color: white
+      position: g3
+      on_initial_square: false
+      unicode: "♟"
+    x: 7
+    y: 3
+    coordinates: g3
+  g4: !ruby/object:Square
+    piece_on_square: !ruby/object:Knight
+      color: black
+      position: g4
+      unicode: "♘"
+    x: 7
+    y: 4
+    coordinates: g4
+  g5: !ruby/object:Square
+    piece_on_square: 
+    x: 7
+    y: 5
+    coordinates: g5
+  g6: !ruby/object:Square
+    piece_on_square: 
+    x: 7
+    y: 6
+    coordinates: g6
+  g7: !ruby/object:Square
+    piece_on_square: !ruby/object:Pawn
+      color: black
+      position: g7
+      on_initial_square: true
+      unicode: "♙"
+    x: 7
+    y: 7
+    coordinates: g7
+  g8: !ruby/object:Square
+    piece_on_square: 
+    x: 7
+    y: 8
+    coordinates: g8
+  h1: !ruby/object:Square
+    piece_on_square: !ruby/object:Rook
+      color: white
+      position: h1
+      on_initial_square: true
+      unicode: "♜"
+    x: 8
+    y: 1
+    coordinates: h1
+  h2: !ruby/object:Square
+    piece_on_square: !ruby/object:Pawn
+      color: white
+      position: h2
+      on_initial_square: true
+      unicode: "♟"
+    x: 8
+    y: 2
+    coordinates: h2
+  h3: !ruby/object:Square
+    piece_on_square: 
+    x: 8
+    y: 3
+    coordinates: h3
+  h4: !ruby/object:Square
+    piece_on_square: 
+    x: 8
+    y: 4
+    coordinates: h4
+  h5: !ruby/object:Square
+    piece_on_square: 
+    x: 8
+    y: 5
+    coordinates: h5
+  h6: !ruby/object:Square
+    piece_on_square: 
+    x: 8
+    y: 6
+    coordinates: h6
+  h7: !ruby/object:Square
+    piece_on_square: !ruby/object:Pawn
+      color: black
+      position: h7
+      on_initial_square: true
+      unicode: "♙"
+    x: 8
+    y: 7
+    coordinates: h7
+  h8: !ruby/object:Square
+    piece_on_square: !ruby/object:Rook
+      color: black
+      position: h8
+      on_initial_square: true
+      unicode: "♖"
+    x: 8
+    y: 8
+    coordinates: h8
