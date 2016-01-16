@@ -52,13 +52,13 @@ class Board
 
   def store_move(starting_square, final_square)
     @history.last_move = {}
-    @history.last_move["#{starting_square.piece_on_square.class}"] = [starting_square, final_square]
+    @history.last_move["#{starting_square.piece_type}"] = [starting_square, final_square]
   end
 
   def simplified_board
     @simplified_board = {}
     @square_hash.each do |k,v|
-      v.piece_on_square.nil? ? @simplified_board[k] = nil : @simplified_board[k] = v.piece_on_square.class.to_s
+      v.piece_on_square.nil? ? @simplified_board[k] = nil : @simplified_board[k] = v.piece_type.to_s
     end
     @simplified_board
   end
@@ -110,7 +110,7 @@ class Board
 
   def pawn_promotion?
     @square_hash.any? do |k,v|
-      (v.y == 8 && v.piece_on_square.class == Pawn) || (v.y == 1 && v.piece_on_square.class == Pawn)
+      (v.y == 8 && v.piece_type == Pawn) || (v.y == 1 && v.piece_type == Pawn)
     end
   end
 

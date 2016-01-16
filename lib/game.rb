@@ -152,7 +152,7 @@ class Game
   end
 
   def mock_king_position
-    @mock_hash.find {|k,v| v.piece_on_square.class == King && v.piece_on_square.color == current_player.color}[0]
+    @mock_hash.find {|k,v| v.piece_type == King && v.piece_on_square.color == current_player.color}[0]
   end
 
   def mock_move(from_square, to_square)
