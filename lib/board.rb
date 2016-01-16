@@ -58,14 +58,14 @@ class Board
     @history.snapshot.push(simplified_board)
   end 
 
-  def store_move(starting_square, final_square)
+  def store_move(from_square, to_square)
     @history.last_move = {}
-    @history.last_move["#{starting_square.piece_type}"] = [starting_square, final_square]
+    @history.last_move["#{from_square.piece_type}"] = [from_square, to_square]
   end 
 
-  def place_piece(initial_square, final_square)
-    final_square.piece_on_square = initial_square.piece_on_square
-    initial_square.piece_on_square = nil
+  def place_piece(from_square, to_square)
+    to_square.piece_on_square = from_square.piece_on_square
+    from_square.piece_on_square = nil
   end
 
   def square_free?(square, board_hash=@square_hash)
