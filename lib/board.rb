@@ -22,10 +22,6 @@ class Board
     end
   end
 
-  def store_board
-    @history.snapshot.push(simplified_board)
-  end
-
   def to_s
     board_string = "\t  a  b  c  d  e  f  g  h  \n\t"
     Numbers.each_with_index do |number, index|
@@ -50,11 +46,6 @@ class Board
     string
   end
 
-  def store_move(starting_square, final_square)
-    @history.last_move = {}
-    @history.last_move["#{starting_square.piece_type}"] = [starting_square, final_square]
-  end
-
   def simplified_board
     @simplified_board = {}
     @square_hash.each do |k,v|
@@ -62,6 +53,15 @@ class Board
     end
     @simplified_board
   end
+
+  def store_board
+    @history.snapshot.push(simplified_board)
+  end 
+
+  def store_move(starting_square, final_square)
+    @history.last_move = {}
+    @history.last_move["#{starting_square.piece_type}"] = [starting_square, final_square]
+  end 
 
   def place_piece(initial_square, final_square)
     final_square.piece_on_square = initial_square.piece_on_square

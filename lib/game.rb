@@ -13,25 +13,6 @@ class Game
     @mock_hash = @board.deep_copy(@board.square_hash)
   end
 
-  def load_game
-    puts "Would you like to load the last game you saved? (yes or no)"
-    response = gets.chomp
-    load_or_play(response)
-  end
-
-  def load_or_play(response)
-    if response == "yes"
-      output = File.new('game_state.yaml', 'r')
-      data = YAML.load(output.read)
-      @player1 = data[0]
-      @player2 = data[1]
-      @board = data[2]
-      @current_turn = data[3]
-      @mock_hash = data[4]
-      output.close
-    end
-  end
-
   def set_opening_positions
     @board.square_hash.each do |key,value|
       case value.y
@@ -80,6 +61,40 @@ class Game
     end
   end
 
+  def play_game
+    load_game
+    while !checkmate? && !draw?
+      puts @board
+      move(current_player)
+      refresh_mock_hash
+      @board.store_board
+    end
+    print_game_result
+  end
+
+  def load_game
+    puts "Would you like to load the last game you saved? (yes or no)"
+    response = gets.chomp
+    load_or_play(response)
+  end
+
+  def load_or_play(response)
+    if response == "yes"
+      output = File.new('game_state.yaml', 'r')
+      data = YAML.load(output.read)
+      @player1 = data[0]
+      @player2 = data[1]
+      @board = data[2]
+      @current_turn = data[3]
+      @mock_hash = data[4]
+      output.close
+    end
+  end
+
+  def exit_game
+    abort("Goodbye")
+  end
+
   def capture_piece(to_square)
     current_player.captured_pieces << to_square.piece_on_square
   end
@@ -93,48 +108,10 @@ class Game
     opponent.pieces.delete_if {|i| i.position == to_square.coordinates}
   end
 
-  def play_game
-    load_game
-    while !checkmate? && !draw?
-      puts @board
-      move(current_player)
-      refresh_mock_hash
-      @board.store_board
-    end
-    print_game_result
-  end
-
   def square_under_attack?(square)
     @mock_hash.any? do |k,v|
       !v.piece_on_square.nil? && v.piece_on_square.color == opponent.color && move_ok?(opponent, @mock_hash[k], @mock_hash[square], v.piece_on_square, @mock_hash) 
     end
-  end
-
-  def checkmate?
-    !move_available? && square_under_attack?(mock_king_position) ? true : false
-  end
-
-  def stalemate?
-    !move_available? && !square_under_attack?(mock_king_position) ? true : false
-  end
-
-  def move_available?
-    current_player.pieces.each do |i|
-      @mock_hash.each do |k,v|
-        next if @mock_hash[i.position] == @mock_hash[k] || k == mock_king_position
-        mock_move(@mock_hash[i.position], @mock_hash[k]) 
-        @available_move = false
-        if move_ok?(current_player, @board.square_hash[i.position], @board.square_hash[k], i) 
-          refresh_mock_hash
-          @available_move = true
-          break @available_move
-        else
-          refresh_mock_hash
-        end
-      end
-      break if @available_move 
-    end
-    @available_move
   end
 
   def castle_through_attack?(player_color, castle_side)
@@ -169,10 +146,6 @@ class Game
 
   def castle_ok?(player, castle_side)
     return player.pieces_on_initial_square? && !castle_through_attack?(player.color, castle_side)
-  end
-
-  def exit_game
-    abort("Goodbye")
   end
 
   def move(player) 
@@ -308,6 +281,33 @@ class Game
     else
       false
     end
+  end
+
+  def checkmate?
+    !move_available? && square_under_attack?(mock_king_position) ? true : false
+  end
+
+  def stalemate?
+    !move_available? && !square_under_attack?(mock_king_position) ? true : false
+  end
+
+  def move_available?
+    current_player.pieces.each do |i|
+      @mock_hash.each do |k,v|
+        next if @mock_hash[i.position] == @mock_hash[k] || k == mock_king_position
+        mock_move(@mock_hash[i.position], @mock_hash[k]) 
+        @available_move = false
+        if move_ok?(current_player, @board.square_hash[i.position], @board.square_hash[k], i) 
+          refresh_mock_hash
+          @available_move = true
+          break @available_move
+        else
+          refresh_mock_hash
+        end
+      end
+      break if @available_move 
+    end
+    @available_move
   end
 
   def no_pawns?
