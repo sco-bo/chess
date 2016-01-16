@@ -109,7 +109,7 @@ class Board
   end
 
   def pawn_promotion?
-    @square_hash.any? do |k,v|
+    @square_hash.any? do |_,v|
       (v.y == 8 && v.piece_type == Pawn) || (v.y == 1 && v.piece_type == Pawn)
     end
   end

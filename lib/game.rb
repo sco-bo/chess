@@ -14,7 +14,7 @@ class Game
   end
 
   def set_opening_positions
-    @board.square_hash.each do |key,value|
+    @board.square_hash.each do |_,value|
       case value.y
       when 2
         value.piece_on_square = @player1.choose_player_piece(Pawn)
@@ -129,7 +129,7 @@ class Game
   end
 
   def mock_king_position
-    @mock_hash.find {|k,v| v.piece_type == King && v.piece_on_square.color == current_player.color}[0]
+    @mock_hash.find {|_,v| v.piece_type == King && v.piece_on_square.color == current_player.color}[0]
   end
 
   def mock_move(from_square, to_square)

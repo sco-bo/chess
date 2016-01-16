@@ -8,6 +8,6 @@ class Square
   end
 
   def piece_type
-    self.piece_on_square.class
+    !self.piece_on_square.nil? ? self.piece_on_square.class : nil
   end
 end
