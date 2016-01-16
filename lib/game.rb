@@ -111,19 +111,11 @@ class Game
   end
 
   def checkmate?
-    if !move_available? && square_under_attack?(mock_king_position)
-     true
-   else
-    false
-    end
+    !move_available? && square_under_attack?(mock_king_position) ? true : false
   end
 
   def stalemate?
-    if !move_available? && !square_under_attack?(mock_king_position)
-      true
-    else
-      false
-    end
+    !move_available? && !square_under_attack?(mock_king_position) ? true : false
   end
 
   def move_available?
@@ -355,36 +347,20 @@ class Game
   end
 
   def bishops_kings? 
-    if current_player.pieces.length == 2 && current_player.bishop_and_king_only? && opponent.pieces.length == 2 && opponent.bishop_and_king_only?
-      true
-    else
-      false
-    end
+    current_player.pieces.length == 2 && current_player.bishop_and_king_only? && opponent.pieces.length == 2 && opponent.bishop_and_king_only? ? true : false
   end
 
   def insufficient_material? 
-    if (no_pawns? && only_kings?) || (no_pawns? && only_king_and_knight_or_bishop?) || (bishops_kings? && bishops_same_color?)
-      true
-    else
-      false
-    end
+    (no_pawns? && only_kings?) || (no_pawns? && only_king_and_knight_or_bishop?) || (bishops_kings? && bishops_same_color?) ? true : false
   end
 
   def fifty_moves?
     snapshot_array = @board.history.snapshot
-    if snapshot_array.length > 50 && snapshot_array.last.values.count(nil) == snapshot_array[-50].values.count(nil) && (snapshot_array.last.reject {|_,v| v != "Pawn"} == snapshot_array[-50].reject {|_,v| v != "Pawn"})
-      true
-    else
-      false
-    end
+    snapshot_array.length > 50 && snapshot_array.last.values.count(nil) == snapshot_array[-50].values.count(nil) && (snapshot_array.last.reject {|_,v| v != "Pawn"} == snapshot_array[-50].reject {|_,v| v != "Pawn"}) ? true : false
   end
 
   def threefold_repetition?
     snapshot_array = @board.history.snapshot
-    if snapshot_array.detect {|i| snapshot_array.count(i) > 3} && snapshot_array.each_with_index.none? {|x,index| x == snapshot_array[index + 1]}
-      true
-    else
-      false
-    end
+    snapshot_array.detect {|i| snapshot_array.count(i) > 3} && snapshot_array.each_with_index.none? {|x,index| x == snapshot_array[index + 1]} ? true : false
   end
 end

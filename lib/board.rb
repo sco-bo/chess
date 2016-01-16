@@ -46,11 +46,7 @@ class Board
   end
 
   def color_background(string)
-    if @white_background
-      string = string.on_black
-    else
-      string = string.on_white
-    end
+    @white_background ? string = string.on_black : string = string.on_white
     string
   end
 
@@ -62,11 +58,7 @@ class Board
   def simplified_board
     @simplified_board = {}
     @square_hash.each do |k,v|
-      if v.piece_on_square.nil?
-        @simplified_board[k] = nil
-      else
-        @simplified_board[k] = v.piece_on_square.class.to_s
-      end
+      v.piece_on_square.nil? ? @simplified_board[k] = nil : @simplified_board[k] = v.piece_on_square.class.to_s
     end
     @simplified_board
   end
@@ -81,75 +73,39 @@ class Board
   end
 
   def same_color_on_square?(square, player_color, board_hash=@square_hash)
-    if !square_free?(square, board_hash) && board_hash[square].piece_on_square.color == player_color
-      true
-    else
-      false
-    end
+    !square_free?(square, board_hash) && board_hash[square].piece_on_square.color == player_color ? true : false
   end
 
   def diagonal_up_right?(from_square, to_square)
-    if (from_square.x < to_square.x) && (from_square.y < to_square.y)
-      true
-    else
-      false
-    end
+    (from_square.x < to_square.x) && (from_square.y < to_square.y) ? true : false
   end
 
   def diagonal_down_right?(from_square, to_square)
-    if (from_square.x < to_square.x) && (from_square.y > to_square.y)
-      true
-    else
-      false
-    end
+    (from_square.x < to_square.x) && (from_square.y > to_square.y) ? true : false
   end
 
   def diagonal_up_left?(from_square, to_square)
-    if (from_square.x > to_square.x) && (from_square.y < to_square.y)
-      true
-    else
-      false
-    end
+    (from_square.x > to_square.x) && (from_square.y < to_square.y) ? true : false
   end
 
   def diagonal_down_left?(from_square, to_square)
-    if (from_square.x > to_square.x) && (from_square.y > to_square.y)
-      true
-    else
-      false
-    end
+    (from_square.x > to_square.x) && (from_square.y > to_square.y) ? true : false
   end
 
   def horizontal_right?(from_square, to_square)
-    if from_square.x < to_square.x
-      true
-    else
-      false
-    end
+    from_square.x < to_square.x ? true : false
   end
 
   def horizontal_left?(from_square, to_square)
-    if from_square.x > to_square.x
-      true
-    else
-      false
-    end
+    from_square.x > to_square.x ? true : false
   end
 
   def up?(from_square, to_square)
-    if from_square.y < to_square.y
-      true
-    else
-      false
-    end
+    from_square.y < to_square.y ? true : false
   end
 
   def down?(from_square, to_square)
-    if from_square.y > to_square.y
-      true
-    else
-      false
-    end
+    from_square.y > to_square.y ? true : false
   end
 
   def pawn_promotion?
@@ -169,11 +125,7 @@ class Board
   end
 
   def valid_en_passant?(from_square, to_square, piece)
-    if piece.class == Pawn && pawn_advance_two_squares? && adjacent_to_piece?(to_square, piece)
-      true
-    else
-      false       
-    end
+    piece.class == Pawn && pawn_advance_two_squares? && adjacent_to_piece?(to_square, piece) ? true : false
   end
 
   def adjacent_to_piece?(to_square, piece)

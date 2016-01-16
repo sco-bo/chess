@@ -58,11 +58,7 @@ class Player
   end
 
   def en_passant_move?(from_square, to_square, piece)
-    if piece.class == Pawn 
-      piece.get_en_passant_moves(from_square, to_square)
-    else
-      false
-    end
+    piece.class == Pawn ? piece.get_en_passant_moves(from_square, to_square) : false
   end
 
   def set_position(piece, to_square)
@@ -70,19 +66,11 @@ class Player
   end
 
   def short_side_rook
-    if self.color == "white"
-      @pieces.find {|i| i.position == "h1"}
-    elsif self.color == "black"
-      @pieces.find {|i| i.position == "h8"}
-    end
+    self.color == "white" ? @pieces.find {|i| i.position == "h1"} : @pieces.find {|i| i.position == "h8"}
   end
 
   def long_side_rook
-    if self.color == "white"
-      @pieces.find {|i| i.position == "a1"}
-    elsif self.color == "black"
-      @pieces.find {|i| i.position == "a8"}
-    end      
+    self.color == "white" ? @pieces.find {|i| i.position == "a1"} : @pieces.find {|i| i.position == "a8"}
   end
 
   def king
